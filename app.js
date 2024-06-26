@@ -76,7 +76,7 @@ class Marketplace {
   editUsername(newUsername, token) {
     // modifica username
   }
-  markSold(primaryKeyAd, token) {
+  markSold(primaryKeyAd, token, referenceKeyUserPuchased) {
     //metti annuncio come venduto
   }
 
@@ -86,11 +86,11 @@ class Marketplace {
   adDetails(primaryKeyAd) {
     //dettagli dell'annuncio 
   }
-  listAdsSold(primaryKeyAd) {
+  listAdsSold(token) {
     //lista annunci venduti da una persona
   }
 
-  listAdsPurchased(primaryKeyAd) {
+  listAdsPurchased(token) {
     // annunci comprati da una persona
   }
 
@@ -138,6 +138,7 @@ class Ads {
     this.primaryKey = Math.random();
     this.phone = phone;
     this.urlForImage = urlForImage;
+    this.referenceKeyUserPuchased = null;
   }
 }
 
