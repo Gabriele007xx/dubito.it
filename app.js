@@ -25,12 +25,12 @@ class Marketplace {
     //uscire dall'account
   }
 
-  createAds(
+  createAd(
+    primaryKeyAd,
     title,
     description,
     price,
     status,
-    referenceKeyUser,
     category,
     phone,
     urlForImage,
@@ -39,12 +39,12 @@ class Marketplace {
     //crea un'annuncio
   }
 
-  editAds(
+  editAd(
+    primaryKeyAd,
     title,
     description,
     price,
     status,
-    referenceKeyUser,
     category,
     phone,
     urlForImage,
@@ -53,56 +53,56 @@ class Marketplace {
     // modificare un'annuncio
   }
 
-  deleteAds(primaryKey, token) {
+  deleteAd(primaryKeyAd, token) {
     //elimina un'annuncio
   }
 
-  addReview(referenceKeyUser, title, description, rating, referenceKeyAds, token) {
+  addReview(title, description, rating, referenceKeyAds, token) {
     //crea recensione
   }
 
-  editReview(referenceKeyUser, title, description, rating, referenceKeyAds, token) {
+  editReview(primaryKeyReview, title, description, rating, token) {
     //modifica recensione
   }
 
-  deleteReview(primaryKey, token) {
+  deleteReview(primaryKeyReview, token) {
     //elimina recensione
   }
 
-  delitAccount(primaryKey, token) {
+  deleteAccount(token, password) {
     //elimina account
   }
 
-  editUsername(newUsername, primaryKey, token) {
+  editUsername(newUsername, token) {
     // modifica username
   }
-  markSold(primaryKey, token) {
+  markSold(primaryKeyAd, token) {
     //metti annuncio come venduto
   }
 
   listFiltred(prezzo, categoria, data, meters) {
     //lista filtrata degli annunci in base alla query
   }
-  detailsAds(primaryKey) {
+  adDetails(primaryKeyAd) {
     //dettagli dell'annuncio 
   }
-  listAdsSold(primaryKey) {
+  listAdsSold(primaryKeyAd) {
     //lista annunci venduti da una persona
   }
 
-  listAdsPurchased(primaryKey) {
+  listAdsPurchased(primaryKeyAd) {
     // annunci comprati da una persona
   }
 
-  listFavourites(primaryKey) {
-    // lista preferiti 
+  listFavourites(token) {
+    // lista preferiti personali
   }
 
-  addFavourite(primaryAds, primaryUser, token) {
+  addFavourite(primaryKeyAd, token) {
     //aggiungi preferiti un preferito
   }
 
-  removeFavourite(primaryKey, primaryUser, token) {
+  removeFavourite(primaryKeyAd, token) {
     // rimuovi dai preferiti un preferito
   }
 }
