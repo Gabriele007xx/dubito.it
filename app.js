@@ -3,7 +3,10 @@ class Marketplace {
   ads = [];
   reviews = [];
   auth = [];
-
+ getUserByToken(token)
+ {
+    // dà l'id utente dato il suo token, e se esiste restituisce l'oggetto utente, se non esiste ritorna null
+ }
   register(email, password) {
     // registrazione account
     let user = new User(email, password);
@@ -105,6 +108,22 @@ class Marketplace {
   removeFavourite(primaryKeyAd, token) {
     // rimuovi dai preferiti un preferito
   }
+  getPhoneNumber(token, referenceKeyAd)
+  {
+    // rivela il numero di telefono dell'annuncio
+  }
+  getInterestedUsersOfAd()
+  {
+    // lista dei utenti interessati all'annuncio
+  }
+  getListOfPendingPurchasesToBeConfirmedOfUser(token)
+  {
+    // lista dei annunci in attesa du essere confermati di un eutente
+  }
+  markBought(token, referenceKeyAd)
+  {
+      // segna come comprato
+  }
 }
 
 class User {
@@ -137,6 +156,7 @@ class Ads {
     this.category = category;
     this.primaryKey = Math.random();
     this.phone = phone;
+    this.lead = [];
     this.urlForImage = urlForImage;
     this.referenceKeyUserPuchased = null;
   }
