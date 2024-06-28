@@ -160,14 +160,21 @@ const userFound = this.users.find(OnFind);
       {
           if(adFound.referenceKeyUser == auth.referenceKeyUser)
           {
-            this.ads = this.ads.map(function(ad){
-            if(ad.primaryKey == primaryKeyAd)
+            if(!adFound.referenceKeyUserPuchased)
             {
-              ad.referenceKeyUserPuchased = referenceKeyUserPuchased;
+                this.ads = this.ads.map(function(ad){
+                  if(ad.primaryKey == primaryKeyAd)
+                  {
+                    return {...ad, referenceKeyUserPuchased: referenceKeyUserPuchased};
+                  }
+                    return {...ad};
+                  });
+                  console.log("Annuncio modificato");
             }
-              return ad;
-            });
-            console.log("Annuncio modificato");           
+            else
+            {
+              console.log("Annuncio già venduto");
+            }                     
           }
           else
           {
