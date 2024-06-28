@@ -9,23 +9,100 @@ class Marketplace {
  }
   register(email, password) {
     // registrazione account
-    let user = new User(email, password);
-    this.users = [...this.users, user];
-  }
-  login(token, email, password) {
-    // accedere all'account
-
-    return this.users.find((el) => {
-      if (el.email == email && el.password == password) {
-        return true;
-      } else {
+    function OnFind(user)
+    {
+        if(user.email == email)
+        {
+            return true;
+        }
         return false;
-      }
-    });
+    }
+    const user = this.users.find(OnFind);
+    if(!!user)
+    {
+        console.log("utente già registrato");
+    }
+    else
+    {
+        let newUser = new User(email, password);
+        this.users = [...this.users, Newuser];
+    }
+  }
+  login(email, password) {
+    function OnFind(user)
+    {
+        if(user.email == email && user.password == password)
+        {
+            return true;
+        }
+        return false;
+    }
+const userFound = this.users.find(OnFind);
+
+if(userFound.devices.lenght >= 2)
+{
+    
+    if(!!userFound) // se esiste
+    {
+        function OnFindAuth(auth)
+        {   
+            if(auth.referenceKeyUser == userFound.primaryKey)
+            {
+                return true;
+            }
+            return false;
+        }
+        const authFound = this.auth.find(OnFindAuth);
+        if(!!authFound)
+        {
+           console.log("Gia' autenticato"); 
+        }
+        else
+        {
+            const newAuth = new Auth(userFound.primaryKey);
+            this.auth = [...this.auth, newAuth];
+            return newAuth.getToken();
+        }
+    }
+    else
+    {
+        console.log("email/password sbagliati");
+    }
+}
+else
+{
+console.log("Troppi devices");
+}
+
+
   }
 
   logout(token) {
     //uscire dall'account
+    //controlla se il token esiste
+    const authFound = this.auth.find(function(auth){
+      if(auth.getToken()== token)
+      {
+          return true;
+      }    
+  });
+  return false;
+  if(!!authFound)
+  {
+
+      this.auth = this.auth.filter(function(){
+          if(auth.getToken() == token)
+          {
+              return false;
+          } 
+          return true;
+      });
+      console.log("Logout effettuato con successo");
+  }
+  else
+  {
+      console.log("token non valido");
+  }
   }
 
   createAd(
@@ -124,6 +201,18 @@ class Marketplace {
   {
       // segna come comprato
   }
+  registerDevice(id, token)
+{
+    function OnFind(element)
+    {
+        if(user.email == email)
+        {
+            return true;
+        }
+        return false;
+    }
+    const user = this.users.find(OnFind);    
+}
 }
 
 class User {
@@ -178,6 +267,11 @@ class Auth {
   constructor(referenceKeyUser) {
     this.primaryKey = Math.random();
     this.referenceKeyUser = referenceKeyUser;
+    this.token = Math.random()*10000000;
+  }
+  getToken()
+  {
+    return this.token;
   }
 }
 
@@ -198,3 +292,12 @@ class Favourite {
     this.primaryKey = Math.random();
   }
 }
+class Device
+{
+    constructor(referenceKeyUser, name)
+    {
+        this.primaryKey = Math.random();
+        this.referenceKeyUser = referenceKeyUser;
+        this.name = name;
+    }
+  }
