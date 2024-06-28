@@ -37,7 +37,11 @@ class Marketplace {
         }
         return false;
     }
-    const userFound = this.users.find(OnFind);
+const userFound = this.users.find(OnFind);
+
+if(userFound.devices.lenght >= 2)
+{
+    
     if(!!userFound) // se esiste
     {
         function OnFindAuth(auth)
@@ -64,6 +68,13 @@ class Marketplace {
     {
         console.log("email/password sbagliati");
     }
+}
+else
+{
+console.log("Troppi devices");
+}
+
+
   }
 
   logout(token) {
