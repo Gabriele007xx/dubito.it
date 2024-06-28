@@ -40,7 +40,7 @@ const userFound = this.users.find(OnFind);
     
     if(!!userFound) // se esiste
     {
-      if(userFound.devices.lenght >= 2)
+      if(userFound.devices.length < 2)
         {
         
         const authFound = this.getAuthByUserID(userFound.primaryKey);
@@ -77,7 +77,7 @@ const userFound = this.users.find(OnFind);
   {
 
       this.auth = this.auth.filter(function(){
-          if(auth.getToken() == token)
+          if(authFound.getToken() == token)
           {
               return false;
           } 
@@ -187,18 +187,13 @@ const userFound = this.users.find(OnFind);
   {
       // segna come comprato
   }
-  registerDevice(id, token)
+  registerDevice(id, token, name)
 {
-    function OnFind(element)
-    {
-        if(user.email == email)
-        {
-            return true;
-        }
-        return false;
-    }
-    const user = this.users.find(OnFind);    
+    const auth = this.getAuthByToken(token);
+    const user = this.getUserbyUserID(auth.referenceKeyUser);
+    user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
 }
+
 getAuthByToken(token)
 {
    return this.auth.find(function(auth){
@@ -220,6 +215,18 @@ return this.auth.find(function (auth) {
     return false;
 }});
 }
+getUserbyUserID(id)
+{
+  function OnFind(user)
+    {
+        if(user.primaryKey == id)
+        {
+            return true;
+        }
+        return false;
+    }
+    return  this.users.find(OnFind);  
+}
 }
 
 class User {
@@ -228,6 +235,7 @@ class User {
     this.email = email;
     this.password = password;
     this.primaryKey = Math.random();
+    this.devices = [];
   }
 }
 
@@ -301,9 +309,10 @@ class Favourite {
 }
 class Device
 {
-    constructor(referenceKeyUser, name)
+    constructor(referenceKeyUser, name, id)
     {
         this.primaryKey = Math.random();
+        this.id = id;
         this.referenceKeyUser = referenceKeyUser;
         this.name = name;
     }
