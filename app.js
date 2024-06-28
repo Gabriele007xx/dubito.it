@@ -144,6 +144,46 @@ const userFound = this.users.find(OnFind);
   }
   markSold(primaryKeyAd, token, referenceKeyUserPuchased) {
     //metti annuncio come venduto
+    const auth = this.getAuthByToken(token);
+    if(!!auth)
+    {
+      function OnFind(ad)
+      {
+        if(ad.primaryKey == primaryKeyAd)
+        {
+          return true;
+        }
+        return false;
+      }
+      const adFound = this.ads.find(OnFind);
+      if(!!adFound)
+      {
+          if(adFound.referenceKeyUser == auth.referenceKeyUser)
+          {
+            this.ads = this.ads.map(function(ad){
+            if(ad.primaryKey == primaryKeyAd)
+            {
+              ad.referenceKeyUserPuchased = referenceKeyUserPuchased;
+            }
+              return ad;
+            });
+            console.log("Annuncio modificato");           
+          }
+          else
+          {
+            console.log("Operazione non autorizzata.");
+          }
+      }
+      else
+      {
+        console.log("Annuncio invalido");
+      }
+    }
+    else
+    {
+      console.log("token non valido");
+    }
+
   }
 
   listFiltred(prezzo, categoria, data, meters) {
@@ -188,11 +228,11 @@ const userFound = this.users.find(OnFind);
       // segna come comprato
   }
   registerDevice(id, token, name)
-{
+  {
     const auth = this.getAuthByToken(token);
     const user = this.getUserbyUserID(auth.referenceKeyUser);
     user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
-}
+  }
 
 getAuthByToken(token)
 {
@@ -256,13 +296,12 @@ class Ads {
     this.date = new Date();
     this.status = status;
     this.referenceKeyUser = referenceKeyUser;
-    this.sold = false;
     this.category = category;
     this.primaryKey = Math.random();
     this.phone = phone;
     this.lead = [];
     this.urlForImage = urlForImage;
-    this.referenceKeyUserPuchased = null;
+    this.referenceKeyUserPuchased = undefined;
   }
 }
 
