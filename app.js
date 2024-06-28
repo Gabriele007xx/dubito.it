@@ -3,10 +3,7 @@ class Marketplace {
   ads = [];
   reviews = [];
   auth = [];
- getUserByToken(token)
- {
-    // dà l'id utente dato il suo token, e se esiste restituisce l'oggetto utente, se non esiste ritorna null
- }
+
   register(email, password) {
     // registrazione account
     function OnFind(user)
@@ -25,7 +22,7 @@ class Marketplace {
     else
     {
         let newUser = new User(email, password);
-        this.users = [...this.users, Newuser];
+        this.users = [...this.users, newUser];
     }
   }
   login(email, password) {
@@ -39,20 +36,14 @@ class Marketplace {
     }
 const userFound = this.users.find(OnFind);
 
-if(userFound.devices.lenght >= 2)
-{
+
     
     if(!!userFound) // se esiste
     {
-        function OnFindAuth(auth)
-        {   
-            if(auth.referenceKeyUser == userFound.primaryKey)
-            {
-                return true;
-            }
-            return false;
-        }
-        const authFound = this.auth.find(OnFindAuth);
+      if(userFound.devices.lenght >= 2)
+        {
+        
+        const authFound = this.getAuthByUserID(userFound.primaryKey);
         if(!!authFound)
         {
            console.log("Gia' autenticato"); 
@@ -63,30 +54,25 @@ if(userFound.devices.lenght >= 2)
             this.auth = [...this.auth, newAuth];
             return newAuth.getToken();
         }
+
     }
     else
     {
-        console.log("email/password sbagliati");
+    console.log("Troppi devices");
     }
-}
-else
-{
-console.log("Troppi devices");
-}
-
-
+   
   }
+  else
+  {
+    console.log("email/password sbagliati");
+  }
+}
 
   logout(token) {
     //uscire dall'account
     //controlla se il token esiste
-    const authFound = this.auth.find(function(auth){
-      if(auth.getToken()== token)
-      {
-          return true;
-      }    
-  });
-  return false;
+    const authFound = this.getAuthByToken(token);
+  
   if(!!authFound)
   {
 
@@ -212,6 +198,27 @@ console.log("Troppi devices");
         return false;
     }
     const user = this.users.find(OnFind);    
+}
+getAuthByToken(token)
+{
+   return this.auth.find(function(auth){
+    if(auth.getToken()== token)
+    {
+        return true;
+    }    
+    return false;
+});
+}
+getAuthByUserID(id)
+{ 
+return this.auth.find(function (auth) {
+{   
+    if(auth.referenceKeyUser == id)
+    {
+        return true;
+    }
+    return false;
+}});
 }
 }
 
