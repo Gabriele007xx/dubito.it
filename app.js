@@ -92,7 +92,6 @@ const userFound = this.users.find(OnFind);
   }
 
   createAd(
-    primaryKeyAd,
     title,
     description,
     price,
@@ -103,6 +102,15 @@ const userFound = this.users.find(OnFind);
     token
   ) {
     //crea un'annuncio
+    const authFound  = this.getAuthByToken(token);
+  
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        const ad = new Ads(title,description, price, status,authFound.referenceKeyUser, category, phone, urlForImage);
+        this.ads = [...this.ads, ad];
+        console.log('annuncio creato con successo')
+      }
   }
 
   editAd(
@@ -123,8 +131,18 @@ const userFound = this.users.find(OnFind);
     //elimina un'annuncio
   }
 
-  addReview(title, description, rating, referenceKeyAds, token) {
+  addReview(title, description, rating, referenceKeyAd, token) {
     //crea recensione
+    const authFound = this.getAuthByToken(token);
+    if (!!authFound) {
+      const review = new Review(authFound.referenceKeyUser, title, description, rating, referenceKeyAd);
+      this.reviews = [...this.reviews, review];
+      console.log("Recensione creata con successo");
+    } else {
+      console.log("Token non valido, impossibile creare la recensione");
+    }
+      
+    
   }
 
   editReview(primaryKeyReview, title, description, rating, token) {
@@ -313,13 +331,13 @@ class Ads {
 }
 
 class Review {
-  constructor(referenceKeyUser, title, description, rating, referenceKeyAds) {
+  constructor(referenceKeyUser, title, description, rating, referenceKeyAd) {
     this.referenceKeyUser = referenceKeyUser;
     this.time = new Date();
     this.description = description;
     this.rating = rating;
     this.title = title;
-    this.referenceKeyAds = referenceKeyAds;
+    this.referenceKeyAd = referenceKeyAd;
     this.primaryKey = Math.random();
   }
 }
