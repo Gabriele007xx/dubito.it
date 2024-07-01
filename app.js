@@ -228,7 +228,10 @@ const userFound = this.users.find(OnFind);
   listFavourites(token) {
     // lista preferiti personali
   }
-
+  viewAdsList(referenceKeyUser)
+  {
+    // lista annunci di una persona
+  }
   addFavourite(primaryKeyAd, token) {
     //aggiungi preferiti un preferito
   }
@@ -240,7 +243,7 @@ const userFound = this.users.find(OnFind);
   {
     // rivela il numero di telefono dell'annuncio
   }
-  getInterestedUsersOfAd()
+  getInterestedUsersOfAd(token, referenceKeyAd)
   {
     // lista dei utenti interessati all'annuncio
   }
@@ -259,39 +262,6 @@ const userFound = this.users.find(OnFind);
     user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
   }
 
-getAuthByToken(token)
-{
-   return this.auth.find(function(auth){
-    if(auth.getToken()== token)
-    {
-        return true;
-    }    
-    return false;
-});
-}
-getAuthByUserID(id)
-{ 
-return this.auth.find(function (auth) {
-{   
-    if(auth.referenceKeyUser == id)
-    {
-        return true;
-    }
-    return false;
-}});
-}
-getUserbyUserID(id)
-{
-  function OnFind(user)
-    {
-        if(user.primaryKey == id)
-        {
-            return true;
-        }
-        return false;
-    }
-    return  this.users.find(OnFind);  
-}
 }
 
 class User {
