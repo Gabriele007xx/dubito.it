@@ -261,6 +261,39 @@ const userFound = this.users.find(OnFind);
     const user = this.getUserbyUserID(auth.referenceKeyUser);
     user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
   }
+  getAuthByToken(token)
+{
+   return this.auth.find(function(auth){
+    if(auth.getToken()== token)
+    {
+        return true;
+    }    
+    return false;
+});
+}
+getAuthByUserID(id)
+{ 
+return this.auth.find(function (auth) {
+{   
+    if(auth.referenceKeyUser == id)
+    {
+        return true;
+    }
+    return false;
+}});
+}
+getUserbyUserID(id)
+{
+  function OnFind(user)
+    {
+        if(user.primaryKey == id)
+        {
+            return true;
+        }
+        return false;
+    }
+    return  this.users.find(OnFind);  
+}
 
 }
 
