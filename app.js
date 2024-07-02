@@ -3,6 +3,7 @@ class Marketplace {
   ads = [];
   reviews = [];
   auth = [];
+  favorites = [];
 
   register(email, password) {
     // registrazione account
@@ -125,10 +126,39 @@ const userFound = this.users.find(OnFind);
     token
   ) {
     // modificare un'annuncio
+    const authFound  = this.getAuthByToken(token);
+  
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        this.ads = this.ads.map(function (ad)
+      {
+          if(ad.primaryKey == primaryKeyAd)
+           {
+            return {...ad, title: title, description: description, price: price, status: 
+              status, category: category, phone: phone, urlForImage: urlForImage};
+           }
+           return {...ad};
+      });
+      }
   }
 
   deleteAd(primaryKeyAd, token) {
     //elimina un'annuncio
+    const authFound  = this.getAuthByToken(token);
+  
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        this.ads = this.ads.filter(function (ad)
+      {
+          if(ad.primaryKey == primaryKeyAd)
+           {
+            return false;
+           }
+           return true;
+      });
+      }
   }
 
   addReview(title, description, rating, referenceKeyAd, token) {
@@ -147,18 +177,80 @@ const userFound = this.users.find(OnFind);
 
   editReview(primaryKeyReview, title, description, rating, token) {
     //modifica recensione
+    const authFound = this.getAuthByToken(token);
+    if (!!authFound) {
+      this.reviews = this.reviews.map(function (review)
+      {
+          if(review.primaryKey == primaryKeyReview)
+           {
+            return {...review, title: title, description: description, rating: rating};
+           }
+           return {...review};
+      });
+    } else {
+      console.log("Token non valido, impossibile modificare la recensione");
+    }
   }
 
   deleteReview(primaryKeyReview, token) {
     //elimina recensione
+    const authFound  = this.getAuthByToken(token);
+  
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        this.reviews = this.reviews.filter(function (review)
+      {
+          if(review.primaryKey == primaryKeyReview)
+           {
+            return false;
+           }
+           return true;
+      });
+      console.log("Recensione eliminata con successo");
+      }
   }
 
   deleteAccount(token, password) {
     //elimina account
+    const authFound  = this.getAuthByToken(token);
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        const userFound = this.getUserbyUserID(authFound.referenceKeyUser);
+        if(userFound.password == password) 
+          {
+            this.users = this.users.filter(function (user)
+            {
+                if(user.primaryKey == authFound.referenceKeyUser)
+                 {
+                  return false;
+                 }
+                 return true;
+            });
+            this.logout(token);
+          }
+          else {
+              console.log("Password non valida");
+          }
+        
+      }
   }
 
   editUsername(newUsername, token) {
-    // modifica username
+    const authFound  = this.getAuthByToken(token);
+      if (!authFound ) {
+        console.log("token non valido");
+      } else {
+        this.users = this.users.map(function(user){
+          if(user.primaryKey == authFound.referenceKeyUser)
+            {
+              return {...user, username: newUsername};
+            }
+            return {...user};
+        });
+        
+      }
   }
   markSold(primaryKeyAd, token, referenceKeyUserPuchased) {
     //metti annuncio come venduto
@@ -219,6 +311,9 @@ const userFound = this.users.find(OnFind);
   }
   listAdsSold(token) {
     //lista annunci venduti da una persona
+    return this.ads.reduce(function(acc, ad){
+
+    }, []);
   }
 
   listAdsPurchased(token) {
@@ -233,7 +328,15 @@ const userFound = this.users.find(OnFind);
     // lista annunci di una persona
   }
   addFavourite(primaryKeyAd, token) {
-    //aggiungi preferiti un preferito
+    //aggiungi ai preferiti un preferito
+    const authFound  = this.getAuthByToken(token);
+    if (!authFound ) {
+      console.log("token non valido");
+    } else {
+      const NewFavorite = new Favourite(authFound.referenceKeyUser, primaryKeyAd);
+      this.favorites = [...this.favorites, NewFavorite];
+      
+    }
   }
 
   removeFavourite(primaryKeyAd, token) {
@@ -368,7 +471,7 @@ class Reports {
 }
 
 class Favourite {
-  constructor() {
+  constructor(referenceKeyUser, referenceKeyAds) {
     this.referenceKeyUser = referenceKeyUser;
     this.referenceKeyAds = referenceKeyAds;
     this.primaryKey = Math.random();
