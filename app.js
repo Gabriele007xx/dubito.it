@@ -35,7 +35,7 @@ class Marketplace {
         }
         return false;
     }
-const userFound = this.users.find(OnFind);
+    const userFound = this.users.find(OnFind);
 
 
     
@@ -67,7 +67,7 @@ const userFound = this.users.find(OnFind);
   {
     console.log("email/password sbagliati");
   }
-}
+  } 
 
   logout(token) {
     //uscire dall'account
@@ -308,24 +308,61 @@ const userFound = this.users.find(OnFind);
   }
   adDetails(primaryKeyAd) {
     //dettagli dell'annuncio 
+    return this.ads.find(function (ad){
+          if(ad.primaryKey == referenceKeyAd)
+            {
+              return true;
+            }
+            return false;
+      });
   }
   listAdsSold(token) {
-    //lista annunci venduti da una persona
+    //lista annunci venduti da una stessa persona
+    const auth = this.getAuthByToken(token);
     return this.ads.reduce(function(acc, ad){
-
+      if(auth.referenceKeyUser == ad.referenceKeyUser && ad.referenceKeyUserPuchased != undefined)
+        {
+          acc = [...acc, ad.primaryKey];
+        }
+        return acc;
     }, []);
   }
 
   listAdsPurchased(token) {
-    // annunci comprati da una persona
+    // annunci comprati da una stessa persona
+    const auth = this.getAuthByToken(token);
+    return this.ads.reduce(function(acc, ad){
+      if(ad.referenceKeyUserPuchased == auth.referenceKeyUser)
+        {
+          acc = [...acc, ad.primaryKey];
+        }
+        return acc;
+    }, []);
+
   }
 
   listFavourites(token) {
     // lista preferiti personali
+    const auth = this.getAuthByToken(token);
+    return this.favorites.reduce(function(acc, fav){
+      if(fav.referenceKeyUser == auth.referenceKeyUser)
+        {
+          acc = [...acc, fav.primaryKey];
+        }
+        return acc;
+    }, []);
   }
   viewAdsList(referenceKeyUser)
   {
     // lista annunci di una persona
+    const auth = this.getAuthByToken(token);
+    return this.ads.reduce(function(acc, ad){
+      if(ad.referenceKeyUser == auth.referenceKeyUser)
+        {
+          acc = [...acc, ad.primaryKey];
+        }
+        return acc;
+    }, []);
   }
   addFavourite(primaryKeyAd, token) {
     //aggiungi ai preferiti un preferito
@@ -341,22 +378,104 @@ const userFound = this.users.find(OnFind);
 
   removeFavourite(primaryKeyAd, token) {
     // rimuovi dai preferiti un preferito
-  }
+    const authFound  = this.getAuthByToken(token);
+    if (!authFound ) {
+      console.log("token non valido");
+    } else {
+      this.favorites = this.favorites.filter(function (favorite)
+      {
+          if(favorite.primaryKeyAd == primaryKeyAd)
+           {
+            return false;
+           }
+           return true;
+      });
+      console.log("Preferito eliminato con successo");
+      }
+    }
+  
   getPhoneNumber(token, referenceKeyAd)
   {
     // rivela il numero di telefono dell'annuncio
+    const authFound  = this.getAuthByToken(token);
+    if (!authFound ) {
+      console.log("token non valido");
+    } else {
+      this.ads = this.ads.map(function(ad){
+          if(ad.primaryKey = referenceKeyAd)
+          {
+            let lead = [...ad.lead, authFound.referenceKeyUser];
+            return {...ad, lead: lead}; 
+          }
+          return {...ad};
+      });
+      return this.ads.find(function (ad){
+          if(ad.primaryKey == referenceKeyAd)
+            {
+              return true;
+            }
+            return false;
+      }).phone;
+    }
   }
   getInterestedUsersOfAd(token, referenceKeyAd)
   {
     // lista dei utenti interessati all'annuncio
+    const authFound  = this.getAuthByToken(token);
+    if (!authFound ) {
+      console.log("token non valido");
+    } else {  
+    return this.ads.find(function (ad){
+          if(ad.primaryKey == referenceKeyAd)
+            {
+              return true;
+            }
+            return false;
+      }).lead;
+    }
   }
   getListOfPendingPurchasesToBeConfirmedOfUser(token)
   {
-    // lista dei annunci in attesa du essere confermati di un eutente
+    // lista degli annunci in attesa du essere confermati di un utente
   }
   markBought(token, referenceKeyAd)
   {
-      // segna come comprato
+      // segna come comprato (da compratore)
+      const authFound = this.getAuthByToken(token);
+      if(!authFound)
+        {
+          console.log("Token invalido");
+        }
+        else{
+          const adFound = this.ads.find(function (ad){
+          if(ad.primaryKey == referenceKeyAd)
+                {
+                  return true;
+                }
+                return false;
+          });
+          if(!adFound)
+            {
+              console.log("Annuncio non trovato");
+            }
+            else
+            {
+                if(adFound.potentialBuyer != undefined)
+                  {
+                    console.log("Gia' comprato");
+                  }
+                  else
+                  {
+                      this.ads.map(function (ad){
+                        if(ad.primaryKey == referenceKeyAd)
+                        {
+                            return {...ad, potentialBuyer: authFound.referenceKeyUser};      
+                        }
+                        return {...ad};
+                      });
+                  }
+            }
+        }
   }
   registerDevice(id, token, name)
   {
@@ -365,16 +484,16 @@ const userFound = this.users.find(OnFind);
     user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
   }
   getAuthByToken(token)
-{
+  {
    return this.auth.find(function(auth){
     if(auth.getToken()== token)
     {
         return true;
     }    
     return false;
-});
-}
-getAuthByUserID(id)
+    });
+  }
+  getAuthByUserID(id)
 { 
 return this.auth.find(function (auth) {
 {   
@@ -397,8 +516,8 @@ getUserbyUserID(id)
     }
     return  this.users.find(OnFind);  
 }
-
 }
+
 
 class User {
   constructor(email, password) {
@@ -433,6 +552,7 @@ class Ads {
     this.lead = [];
     this.urlForImage = urlForImage;
     this.referenceKeyUserPuchased = undefined;
+    this.potentialBuyer = undefined;
   }
 }
 
