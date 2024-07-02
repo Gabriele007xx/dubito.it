@@ -170,23 +170,37 @@ class Marketplace {
       console.log("Recensione creata con successo");
     } else {
       console.log("Token non valido, impossibile creare la recensione");
-    }
-      
-    
+    }  
   }
 
   editReview(primaryKeyReview, title, description, rating, token) {
     //modifica recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
-      this.reviews = this.reviews.map(function (review)
+      const reviewFound = this.reviews.find(function (rev)
+    {
+      return rev.primaryKey == primaryKeyReview;
+    });
+    if(!!reviewFound)
       {
-          if(review.primaryKey == primaryKeyReview)
-           {
-            return {...review, title: title, description: description, rating: rating};
-           }
-           return {...review};
-      });
+        if(reviewFound.referenceKeyUser == authFound.referenceKeyUser)
+        {
+          this.reviews = this.reviews.map(function (review)
+        {
+            if(review.primaryKey == primaryKeyReview)
+             {
+              return {...review, title: title, description: description, rating: rating};
+             }
+             return {...review};
+        });
+        }
+        else
+        {
+          console.log("La recensione non e' tua");
+        }
+        
+      }
+      
     } else {
       console.log("Token non valido, impossibile modificare la recensione");
     }
@@ -199,17 +213,31 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        this.reviews = this.reviews.filter(function (review)
+        const reviewFound = this.reviews.find(function (rev)
+    {
+      return rev.primaryKey == primaryKeyReview;
+    });
+    if(!!reviewFound)
       {
-          if(review.primaryKey == primaryKeyReview)
-           {
-            return false;
-           }
-           return true;
-      });
-      console.log("Recensione eliminata con successo");
+        if(reviewFound.referenceKeyUser == authFound.referenceKeyUser)
+        {
+          this.reviews = this.reviews.filter(function (review)
+        {
+            if(review.primaryKey == primaryKeyReview)
+             {
+              return false;
+             }
+             return true;
+        });
+        }
+        else
+        {
+          console.log("La recensione non e' tua");
+        }
+       
       }
   }
+}
 
   deleteAccount(token, password) {
     //elimina account
