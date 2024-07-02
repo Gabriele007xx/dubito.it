@@ -1,0 +1,14 @@
+{
+  "name": "dubito.it",
+  "version": "1.0.0",
+  "description": "il sito pieno di sorprese",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gabriele Lo Re",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}
