@@ -229,6 +229,7 @@ class Marketplace {
              }
              return true;
         });
+        console.log("Recensione eliminata con successo");
         }
         else
         {
