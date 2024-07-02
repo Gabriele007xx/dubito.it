@@ -1,13 +1,13 @@
 class Marketplace {
-  users = [];
-  ads = [];
-  reviews = [];
-  auth = [];
-  favorites = [];
+  users:Array<User> = [];
+  ads:Array<Ad> = [];
+  reviews:Array<Review> = [];
+  auth:Array<Auth> = [];
+  favorites:Array<Favourite> = [];
 
-  register(email, password) {
+  register (email:string, password:string) {
     // registrazione account
-    function OnFind(user)
+    function OnFind(user:User)
     {
         if(user.email == email)
         {
@@ -26,8 +26,8 @@ class Marketplace {
         this.users = [...this.users, newUser];
     }
   }
-  login(email, password) {
-    function OnFind(user)
+  login(email:string, password:string) {
+    function OnFind(user:User)
     {
         if(user.email == email && user.password == password)
         {
@@ -69,7 +69,7 @@ class Marketplace {
   }
   } 
 
-  logout(token) {
+  logout(token:number) {
     //uscire dall'account
     //controlla se il token esiste
     const authFound = this.getAuthByToken(token);
@@ -93,14 +93,14 @@ class Marketplace {
   }
 
   createAd(
-    title,
-    description,
-    price,
-    status,
-    category,
-    phone,
-    urlForImage,
-    token
+    title:string,
+    description:string,
+    price:number,
+    status:string,
+    category:string,
+    phone:string,
+    urlForImage:string,
+    token:number
   ) {
     //crea un'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -115,15 +115,15 @@ class Marketplace {
   }
 
   editAd(
-    primaryKeyAd,
-    title,
-    description,
-    price,
-    status,
-    category,
-    phone,
-    urlForImage,
-    token
+    primaryKeyAd:number,
+    title:string,
+    description:string,
+    price:number,
+    status:string,
+    category:string,
+    phone:string,
+    urlForImage:string,
+    token:number
   ) {
     // modificare un'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -143,7 +143,7 @@ class Marketplace {
       }
   }
 
-  deleteAd(primaryKeyAd, token) {
+  deleteAd(primaryKeyAd:number, token:number) {
     //elimina un'annuncio
     const authFound  = this.getAuthByToken(token);
   
@@ -161,7 +161,7 @@ class Marketplace {
       }
   }
 
-  addReview(title, description, rating, referenceKeyAd, token) {
+  addReview(title:string, description:string, rating:number, referenceKeyAd:number, token:number) {
     //crea recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
@@ -173,7 +173,7 @@ class Marketplace {
     }  
   }
 
-  editReview(primaryKeyReview, title, description, rating, token) {
+  editReview(primaryKeyReview:number, title:string, description:string, rating:number, token:number) {
     //modifica recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
@@ -206,7 +206,7 @@ class Marketplace {
     }
   }
 
-  deleteReview(primaryKeyReview, token) {
+  deleteReview(primaryKeyReview:number, token:number) {
     //elimina recensione
     const authFound  = this.getAuthByToken(token);
   
@@ -240,7 +240,7 @@ class Marketplace {
   }
 }
 
-  deleteAccount(token, password) {
+  deleteAccount(token:number, password:string) {
     //elimina account
     const authFound  = this.getAuthByToken(token);
       if (!authFound ) {
@@ -266,7 +266,7 @@ class Marketplace {
       }
   }
 
-  editUsername(newUsername, token) {
+  editUsername(newUsername:string, token:number) {
     const authFound  = this.getAuthByToken(token);
       if (!authFound ) {
         console.log("token non valido");
@@ -281,7 +281,7 @@ class Marketplace {
         
       }
   }
-  markSold(primaryKeyAd, token, referenceKeyUserPuchased) {
+  markSold(primaryKeyAd:number, token:number, referenceKeyUserPuchased:number) {
     //metti annuncio come venduto
     const auth = this.getAuthByToken(token);
     if(!!auth)
@@ -332,10 +332,10 @@ class Marketplace {
 
   }
 
-  listFiltred(prezzo, categoria, data, meters) {
+  listFiltred(prezzo:number, categoria:string, data:Date, meters:number) {
     //lista filtrata degli annunci in base alla query
   }
-  adDetails(primaryKeyAd) {
+  adDetails(primaryKeyAd:number) {
     //dettagli dell'annuncio 
     return this.ads.find(function (ad){
           if(ad.primaryKey == referenceKeyAd)
@@ -345,7 +345,7 @@ class Marketplace {
             return false;
       });
   }
-  listAdsSold(token) {
+  listAdsSold(token:number) {
     //lista annunci venduti da una stessa persona
     const auth = this.getAuthByToken(token);
     return this.ads.reduce(function(acc, ad){
@@ -357,7 +357,7 @@ class Marketplace {
     }, []);
   }
 
-  listAdsPurchased(token) {
+  listAdsPurchased(token:number) {
     // annunci comprati da una stessa persona
     const auth = this.getAuthByToken(token);
     return this.ads.reduce(function(acc, ad){
@@ -370,7 +370,7 @@ class Marketplace {
 
   }
 
-  listFavourites(token) {
+  listFavourites(token:number) {
     // lista preferiti personali
     const auth = this.getAuthByToken(token);
     return this.favorites.reduce(function(acc, fav){
@@ -381,7 +381,7 @@ class Marketplace {
         return acc;
     }, []);
   }
-  viewAdsList(referenceKeyUser)
+  viewAdsList(referenceKeyUser:number, token:number)
   {
     // lista annunci di una persona
     const auth = this.getAuthByToken(token);
@@ -393,7 +393,7 @@ class Marketplace {
         return acc;
     }, []);
   }
-  addFavourite(primaryKeyAd, token) {
+  addFavourite(primaryKeyAd:number, token:number) {
     //aggiungi ai preferiti un preferito
     const authFound  = this.getAuthByToken(token);
     if (!authFound ) {
@@ -405,7 +405,7 @@ class Marketplace {
     }
   }
 
-  removeFavourite(primaryKeyAd, token) {
+  removeFavourite(primaryKeyAd:number, token:number) {
     // rimuovi dai preferiti un preferito
     const authFound  = this.getAuthByToken(token);
     if (!authFound ) {
@@ -423,7 +423,7 @@ class Marketplace {
       }
     }
   
-  getPhoneNumber(token, referenceKeyAd)
+  getPhoneNumber(token:number, referenceKeyAd:number)
   {
     // rivela il numero di telefono dell'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -447,7 +447,7 @@ class Marketplace {
       }).phone;
     }
   }
-  getInterestedUsersOfAd(token, referenceKeyAd)
+  getInterestedUsersOfAd(token:number, referenceKeyAd:number)
   {
     // lista dei utenti interessati all'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -463,11 +463,11 @@ class Marketplace {
       }).lead;
     }
   }
-  getListOfPendingPurchasesToBeConfirmedOfUser(token)
+  getListOfPendingPurchasesToBeConfirmedOfUser(token:number)
   {
     // lista degli annunci in attesa du essere confermati di un utente
   }
-  markBought(token, referenceKeyAd)
+  markBought(token:number, referenceKeyAd:number)
   {
       // segna come comprato (da compratore)
       const authFound = this.getAuthByToken(token);
@@ -506,13 +506,13 @@ class Marketplace {
             }
         }
   }
-  registerDevice(id, token, name)
+  registerDevice(id:Device["id"], token:Auth["token"], name:string)
   {
     const auth = this.getAuthByToken(token);
     const user = this.getUserbyUserID(auth.referenceKeyUser);
     user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
   }
-  getAuthByToken(token)
+  getAuthByToken(token:Auth["token"])
   {
    return this.auth.find(function(auth){
     if(auth.getToken()== token)
@@ -522,7 +522,7 @@ class Marketplace {
     return false;
     });
   }
-  getAuthByUserID(id)
+  getAuthByUserID(id:User["primaryKey"])
 { 
 return this.auth.find(function (auth) {
 {   
@@ -533,9 +533,9 @@ return this.auth.find(function (auth) {
     return false;
 }});
 }
-getUserbyUserID(id)
+getUserbyUserID(id:User["primaryKey"])
 {
-  function OnFind(user)
+  function OnFind(user:User)
     {
         if(user.primaryKey == id)
         {
@@ -549,25 +549,44 @@ getUserbyUserID(id)
 
 
 class User {
-  constructor(email, password) {
+  username:string;
+  email:string;
+  password:string;
+  primaryKey:number;
+  devices:Array<Device>= [];
+
+  constructor(email:string, password:string) {
     this.username = email.split("@").at(0);
     this.email = email;
     this.password = password;
     this.primaryKey = Math.random();
-    this.devices = [];
+    
   }
 }
 
-class Ads {
+class Ad {
+  title:string;
+    description:string;
+    price:number;
+    status:string;
+    referenceKeyUser:User["primaryKey"];
+    category:string;
+    phone:string;
+    urlForImage:string;
+    date:Date;
+    primaryKey:number;
+    potentialBuyer:number;
+    referenceKeyUserPuchased:User["primaryKey"];
+    lead:Array<number> = [];
   constructor(
-    title,
-    description,
-    price,
-    status,
-    referenceKeyUser,
-    category,
-    phone,
-    urlForImage
+    title:string,
+    description:string,
+    price:number,
+    status:string,
+    referenceKeyUser:number,
+    category:string,
+    phone:string,
+    urlForImage:string
   ) {
     this.title = title;
     this.description = description;
@@ -578,15 +597,21 @@ class Ads {
     this.category = category;
     this.primaryKey = Math.random();
     this.phone = phone;
-    this.lead = [];
     this.urlForImage = urlForImage;
-    this.referenceKeyUserPuchased = undefined;
-    this.potentialBuyer = undefined;
+    this.referenceKeyUserPuchased = NaN;
+    this.potentialBuyer = NaN;
   }
 }
 
 class Review {
-  constructor(referenceKeyUser, title, description, rating, referenceKeyAd) {
+  referenceKeyUser:User["primaryKey"];
+  time:Date;
+  description:string;
+  rating:number;
+  title:string;
+  referenceKeyAd:Ad["primaryKey"];
+  primaryKey:number;
+  constructor(referenceKeyUser:number, title:string, description:string, rating:number, referenceKeyAd:number) {
     this.referenceKeyUser = referenceKeyUser;
     this.time = new Date();
     this.description = description;
@@ -598,7 +623,10 @@ class Review {
 }
 
 class Auth {
-  constructor(referenceKeyUser) {
+  primaryKey:number;
+  referenceKeyUser:User["primaryKey"];
+  token:number;
+  constructor(referenceKeyUser:number) {
     this.primaryKey = Math.random();
     this.referenceKeyUser = referenceKeyUser;
     this.token = Math.random()*10000000;
@@ -610,25 +638,37 @@ class Auth {
 }
 
 class Reports {
-  constructor(referenceKeyAds, referenceKeyUser) {
+  primaryKey:number;
+  referenceKeyUser:User["primaryKey"];
+  referenceKeyAd:Ad["primaryKey"];
+  description:string;
+  closed:boolean;
+  constructor(referenceKeyAd:number, referenceKeyUser:number, description:string) {
     this.primaryKey = Math.random();
     this.referenceKeyUser = referenceKeyUser;
-    this.referenceKeyAds = referenceKeyAds;
+    this.referenceKeyAd = referenceKeyAd;
     this.description = description;
-    this.status = false;
+    this.closed = false;
   }
 }
 
 class Favourite {
-  constructor(referenceKeyUser, referenceKeyAds) {
+  referenceKeyUser:User["primaryKey"];
+  referenceKeyAd:Ad["primaryKey"];
+  primaryKey:number;
+  constructor(referenceKeyUser:number, referenceKeyAd:number) {
     this.referenceKeyUser = referenceKeyUser;
-    this.referenceKeyAds = referenceKeyAds;
+    this.referenceKeyAd = referenceKeyAd;
     this.primaryKey = Math.random();
   }
 }
 class Device
 {
-    constructor(referenceKeyUser, name, id)
+  primaryKey:number;
+  id:number;
+  referenceKeyUser:User["primaryKey"];
+  name:string;
+    constructor(referenceKeyUser:number, name:string, id:number)
     {
         this.primaryKey = Math.random();
         this.id = id;
