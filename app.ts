@@ -76,7 +76,7 @@ class Marketplace {
   }
   } 
 
-  logout(token:number) {
+  logout(token:Auth["token"]) {
     //uscire dall'account
     //controlla se il token esiste
     const authFound = this.getAuthByToken(token);
@@ -107,7 +107,7 @@ class Marketplace {
     category:string,
     phone:string,
     urlForImage:string,
-    token:number
+    token:Auth["token"]
   ) {
     //crea un'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -130,7 +130,7 @@ class Marketplace {
     category:string,
     phone:string,
     urlForImage:string,
-    token:number
+    token:Auth["token"]
   ) {
     // modificare un'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -150,7 +150,7 @@ class Marketplace {
       }
   }
 
-  deleteAd(primaryKeyAd:number, token:number) {
+  deleteAd(primaryKeyAd:number, token:Auth["token"]) {
     //elimina un'annuncio
     const authFound  = this.getAuthByToken(token);
   
@@ -168,7 +168,7 @@ class Marketplace {
       }
   }
 
-  addReview(title:string, description:string, rating:number, referenceKeyAd:number, token:number) {
+  addReview(title:string, description:string, rating:number, referenceKeyAd:number, token:Auth["token"]) {
     //crea recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
@@ -180,7 +180,7 @@ class Marketplace {
     }  
   }
 
-  editReview(primaryKeyReview:number, title:string, description:string, rating:number, token:number) {
+  editReview(primaryKeyReview:number, title:string, description:string, rating:number, token:Auth["token"]) {
     //modifica recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
@@ -213,7 +213,7 @@ class Marketplace {
     }
   }
 
-  deleteReview(primaryKeyReview:number, token:number) {
+  deleteReview(primaryKeyReview:number, token:Auth["token"]) {
     //elimina recensione
     const authFound  = this.getAuthByToken(token);
   
@@ -247,7 +247,7 @@ class Marketplace {
   }
 }
 
-  deleteAccount(token:number, password:string) {
+  deleteAccount(token:Auth["token"], password:string) {
     //elimina account
     const authFound  = this.getAuthByToken(token);
       if (!authFound ) {
@@ -281,7 +281,7 @@ class Marketplace {
       }
   }
 
-  editUsername(newUsername:string, token:number) {
+  editUsername(newUsername:string, token:Auth["token"]) {
     const authFound  = this.getAuthByToken(token);
       if (!authFound ) {
         console.log("token non valido");
@@ -296,7 +296,7 @@ class Marketplace {
         
       }
   }
-  markSold(primaryKeyAd:number, token:number, referenceKeyUserPuchased:number) {
+  markSold(primaryKeyAd:number, token:Auth["token"], referenceKeyUserPuchased:number) {
     //metti annuncio come venduto
     const auth = this.getAuthByToken(token);
     if(!!auth)
@@ -360,7 +360,7 @@ class Marketplace {
             return false;
       });
   }
-  listAdsSold(token:number) {
+  listAdsSold(token:Auth["token"]) {
     //lista annunci venduti da una stessa persona
     const auth = this.getAuthByToken(token);
     if(!!auth)
@@ -374,7 +374,7 @@ class Marketplace {
     console.log("token non valido");
   }
 
-  listAdsPurchased(token:number) {
+  listAdsPurchased(token:Auth["token"]) {
     // annunci comprati da una stessa persona
     const auth = this.getAuthByToken(token);
     if(!!auth)
@@ -389,7 +389,7 @@ class Marketplace {
 
   }
 
-  listFavourites(token:number) {
+  listFavourites(token:Auth["token"]) {
     // lista preferiti personali
     const auth = this.getAuthByToken(token);
     if(!!auth)
@@ -402,7 +402,7 @@ class Marketplace {
     }, []);
     else console.log("token non valido");
   }
-  viewAdsList(referenceKeyUser:number, token:number)
+  viewAdsList(referenceKeyUser:number, token:Auth["token"])
   {
     // lista annunci dello stesso utente
     const auth = this.getAuthByToken(token);
@@ -416,7 +416,7 @@ class Marketplace {
     }, []);
     else console.log("token non valido");
   }
-  addFavourite(primaryKeyAd:number, token:number) {
+  addFavourite(primaryKeyAd:number, token:Auth["token"]) {
     //aggiungi ai preferiti un preferito
     const authFound  = this.getAuthByToken(token);
     if (!authFound ) {
@@ -428,7 +428,7 @@ class Marketplace {
     }
   }
 
-  removeFavourite(primaryKeyAd:number, token:number) {
+  removeFavourite(primaryKeyAd:number, token:Auth["token"]) {
     // rimuovi dai preferiti un preferito
     const authFound  = this.getAuthByToken(token);
     if (!authFound ) {
@@ -446,7 +446,7 @@ class Marketplace {
       }
     }
   
-  getPhoneNumber(token:number, referenceKeyAd:number)
+  getPhoneNumber(token:Auth["token"], referenceKeyAd:number)
   {
     // rivela il numero di telefono dell'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -471,7 +471,7 @@ class Marketplace {
       })!.phone;
     }
   }
-  getInterestedUsersOfAd(token:number, referenceKeyAd:number)
+  getInterestedUsersOfAd(token:Auth["token"], referenceKeyAd:number)
   {
     // lista dei utenti interessati all'annuncio
     const authFound  = this.getAuthByToken(token);
@@ -487,11 +487,11 @@ class Marketplace {
       })!.lead;
     }
   }
-  getListOfPendingPurchasesToBeConfirmedOfUser(token:number)
+  getListOfPendingPurchasesToBeConfirmedOfUser(token:Auth["token"])
   {
     // lista degli annunci in attesa du essere confermati di un utente
   }
-  markBought(token:number, referenceKeyAd:number)
+  markBought(token:Auth["token"], referenceKeyAd:number)
   {
       // segna come comprato (da compratore)
       const authFound = this.getAuthByToken(token);
