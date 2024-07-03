@@ -8,7 +8,7 @@ export class User {
     devices:Array<Device>= [];
   
     constructor(email:string, password:string) {
-      this.username = email.split("@")[0]!;  
+      this.username = email.split("@")[0];  
        /*  
       Il problema è l'errore 'Typescript: Type 'string | undefined' is not assignable to type 'string''.
       
