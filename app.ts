@@ -108,7 +108,7 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        const ad = new Ads(title,description, price, status,authFound.referenceKeyUser, category, phone, urlForImage);
+        const ad = new Ad(title,description, price, status,authFound.referenceKeyUser, category, phone, urlForImage);
         this.ads = [...this.ads, ad];
         console.log('annuncio creato con successo')
       }
@@ -247,20 +247,28 @@ class Marketplace {
         console.log("token non valido");
       } else {
         const userFound = this.getUserbyUserID(authFound.referenceKeyUser);
-        if(userFound.password == password) 
+        if(!!userFound)
           {
-            this.users = this.users.filter(function (user)
-            {
-                if(user.primaryKey == authFound.referenceKeyUser)
-                 {
-                  return false;
-                 }
-                 return true;
-            });
-            this.logout(token);
+            if(userFound.password == password) 
+              {
+                this.users = this.users.filter(function (user)
+                {
+                    if(user.primaryKey == authFound.referenceKeyUser)
+                     {
+                      return false;
+                     }
+                     return true;
+                });
+                this.logout(token);
+              }
+              else {
+                  console.log("Password non valida");
+              }
           }
-          else {
-              console.log("Password non valida");
+        
+          else
+          {
+              console.log("utente non trovato");
           }
         
       }
@@ -286,7 +294,7 @@ class Marketplace {
     const auth = this.getAuthByToken(token);
     if(!!auth)
     {
-      function OnFind(ad)
+      function OnFind(ad:Ad)
       {
         if(ad.primaryKey == primaryKeyAd)
         {
@@ -338,7 +346,7 @@ class Marketplace {
   adDetails(primaryKeyAd:number) {
     //dettagli dell'annuncio 
     return this.ads.find(function (ad){
-          if(ad.primaryKey == referenceKeyAd)
+          if(ad.primaryKey == primaryKeyAd)
             {
               return true;
             }
@@ -348,50 +356,58 @@ class Marketplace {
   listAdsSold(token:number) {
     //lista annunci venduti da una stessa persona
     const auth = this.getAuthByToken(token);
-    return this.ads.reduce(function(acc, ad){
+    if(!!auth)
+    return this.ads.reduce(function(acc:Array<number>, ad){
       if(auth.referenceKeyUser == ad.referenceKeyUser && ad.referenceKeyUserPuchased != undefined)
         {
           acc = [...acc, ad.primaryKey];
         }
         return acc;
     }, []);
+    console.log("token non valido");
   }
 
   listAdsPurchased(token:number) {
     // annunci comprati da una stessa persona
     const auth = this.getAuthByToken(token);
-    return this.ads.reduce(function(acc, ad){
+    if(!!auth)
+    return this.ads.reduce(function(acc:Array<number>, ad){
       if(ad.referenceKeyUserPuchased == auth.referenceKeyUser)
         {
           acc = [...acc, ad.primaryKey];
         }
         return acc;
     }, []);
+    else console.log("token non valido");
 
   }
 
   listFavourites(token:number) {
     // lista preferiti personali
     const auth = this.getAuthByToken(token);
-    return this.favorites.reduce(function(acc, fav){
+    if(!!auth)
+    return this.favorites.reduce(function(acc:Array<number>, fav){
       if(fav.referenceKeyUser == auth.referenceKeyUser)
         {
           acc = [...acc, fav.primaryKey];
         }
         return acc;
     }, []);
+    else console.log("token non valido");
   }
   viewAdsList(referenceKeyUser:number, token:number)
   {
-    // lista annunci di una persona
+    // lista annunci dello stesso utente
     const auth = this.getAuthByToken(token);
-    return this.ads.reduce(function(acc, ad){
+    if(!!auth)
+    return this.ads.reduce(function(acc:Array<number>, ad){
       if(ad.referenceKeyUser == auth.referenceKeyUser)
         {
           acc = [...acc, ad.primaryKey];
         }
         return acc;
     }, []);
+    else console.log("token non valido");
   }
   addFavourite(primaryKeyAd:number, token:number) {
     //aggiungi ai preferiti un preferito
@@ -411,9 +427,9 @@ class Marketplace {
     if (!authFound ) {
       console.log("token non valido");
     } else {
-      this.favorites = this.favorites.filter(function (favorite)
+      this.favorites = this.favorites.filter(function (favorite:Favourite)
       {
-          if(favorite.primaryKeyAd == primaryKeyAd)
+          if(favorite.referenceKeyAd == primaryKeyAd)
            {
             return false;
            }
@@ -438,7 +454,8 @@ class Marketplace {
           }
           return {...ad};
       });
-      return this.ads.find(function (ad){
+      
+      return this.ads.find(function (ad:Ad){
           if(ad.primaryKey == referenceKeyAd)
             {
               return true;
@@ -454,7 +471,7 @@ class Marketplace {
     if (!authFound ) {
       console.log("token non valido");
     } else {  
-    return this.ads.find(function (ad){
+    return this.ads.find(function (ad:Ad){
           if(ad.primaryKey == referenceKeyAd)
             {
               return true;
@@ -509,8 +526,17 @@ class Marketplace {
   registerDevice(id:Device["id"], token:Auth["token"], name:string)
   {
     const auth = this.getAuthByToken(token);
-    const user = this.getUserbyUserID(auth.referenceKeyUser);
-    user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
+    if(!auth)
+      {
+          console.log("token non valido");
+      }
+      else
+      {
+        const user = this.getUserbyUserID(auth.referenceKeyUser);
+        if(!!user) user.devices = [...user.devices, new Device(user.primaryKey, name, id)];
+        else console.log("utente non trovato");
+      }
+    
   }
   getAuthByToken(token:Auth["token"])
   {
