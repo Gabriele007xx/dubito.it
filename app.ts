@@ -4,6 +4,7 @@ import { Review } from "./models/Review";
 import { Auth } from "./models/Auth";
 import { Favourite } from "./models/Favorite";
 import { Device } from "./models/Device";
+import { DocAPI } from "./doc/DocAPI";
 
 class Marketplace {
   users:Array<User> = [];
@@ -578,4 +579,33 @@ getUserbyUserID(id:User["primaryKey"])
     }
     return  this.users.find(OnFind);  
 }
+}
+
+const apis = {
+  register: new DocAPI("auth/register", "POST", false),
+  login: new DocAPI("auth/login", "POST", false),
+  logout: new DocAPI("auth/logout", "POST", true),
+  deleteAccount: new DocAPI("/users", "DELETE", true),
+  editUsername: new DocAPI("/users", "PATCH", true),
+  listAdsSold: new DocAPI("/users/?action=sold", "GET", true),
+  listAdsPurchased: new DocAPI("/users/?action=bought", "GET", true),
+  createAd: new DocAPI("/ads", "POST", true),
+  editAd: new DocAPI("/ads", "PUT", true),
+  markSold: new DocAPI("/ads?ID_AD&action=sold", "PATCH", true),
+  markBought: new DocAPI("/ads?ID_AD&action=bought", "PATCH", true),
+  adDetails: new DocAPI("/ads/{primaryKey}","GET", false),
+  viewAdsList: new DocAPI("/ads", "GET", false),
+  deleteAd: new DocAPI("/ads", "DELETE", true),
+  getInterestedUsersOfAd: new DocAPI("/ads/?lead=true&adID={ID}", "GET", true),
+  getPhoneNumber: new DocAPI("/ads/?phone=true&adID={ID}", "GET", true),
+  getListOfPendingPurchasesToBeConfirmedOfUser: new DocAPI("ads/?pendinglist=true&adID={ID}", "GET", true),
+  addReview: new DocAPI("/review", "POST", true),
+  editReview: new DocAPI("/reviews", "PUT", true),
+  deleteReview: new DocAPI("/reviews", "DELETE", true),
+  addFavorite: new DocAPI("/favorites", "POST", true),
+  editFavorite: new DocAPI("/favorites", "PUT", true),
+  listFavorites: new DocAPI("/favorites/{ID_USER}", "GET", true),
+  removeFavorite: new DocAPI("/favorites", "DELETE", true),
+  listFiltred: new DocAPI("/ads/?{...}", "GET", false),
+  registerDevice: new DocAPI("/devices/{referenceKeyUser}", "POST", true)
 }
