@@ -606,6 +606,6 @@ const apis = {
   editFavorite: new DocAPI("/favorites/{ID}", "PUT", true),
   listFavorites: new DocAPI("/users/{ID}/favorites", "GET", true),
   removeFavorite: new DocAPI("/favorites/{ID}", "DELETE", true),
-  listFiltred: new DocAPI("/ads/?{...}", "GET", false),
+  listFiltred: new DocAPI("/ads/?category={category}&?price={price}&?meters={meters}", "GET", false),
   registerDevice: new DocAPI("/devices/register/{referenceKeyUser}", "POST", true)
 }
