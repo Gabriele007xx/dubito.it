@@ -11,4 +11,4 @@
 # Lato tecnico
 
 ## Relazioni DB
-![]
+![Relazioni](https://github.com/Gabriele007xx/dubito.it/blob/docs/site/doc/relations.png)
