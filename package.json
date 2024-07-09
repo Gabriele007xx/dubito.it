@@ -4,15 +4,16 @@
   "description": "il sito pieno di sorprese",
   "main": "app.js",
   "scripts": {
-    "build" : "tsc --noEmit && tsc --outDir build"
+    "build" : "tsc --noEmit && tsc --outDir build",
+    "start": "node build/index.js"
   },
   "author": "Gabriele Lo Re",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.5.3",
-    "type@/express": "^5.5.3"
+    "@types/express": "^4.17.21"
   },
   "Dependencies": {
-    "express": "^5.5.3"
+    "express": "^4.19.2"
   }
 }
