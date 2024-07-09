@@ -11,16 +11,44 @@ const server = express.json();
 
 app.use(server);
 
-app.use("/", function(req, res){
-    //res.status(200).sendFile(__dirname + "/index.html");
-    return res.json([dubito.getUsers()]);
+app.get("/", function(req, res){
+  res.status(200).sendFile(__dirname + "/index.html");
+  
+});
+app.post("/api/users/register", function(req, res){
+  if(!req.body.email) return res.status(400).send("Missing email");
+  if(!req.body.password) return res.status(400).send("Missing password");
+  const result = dubito.register(req.body.email, req.body.password);
+  if(result) return res.status(400).send("Registrazione fallita");
+  return res.status(200).send("Registrazione avvenuta");
+    
+});
+app.post("/api/users/login", function(req, res){
+  
+  if(!req.body.email) return res.status(400).send("Missing email");
+  if(!req.body.password) return res.status(400).send("Missing password");
+  const result = dubito.login(req.body.email, req.body.password);
+  if(result) return res.status(400).send("Login fallito");
+  return res.status(200).send("Login avvenuto");
+    
+});
+app.get("/api/users", function(req, res){
+  return res.json(dubito.getUsers());
+    
+});
+app.get("/api/users/:primaryKey", function(req, res){
+  //return res.json(dubito.getUsers());
+    
+});
+app.get("/api/ads", function(req, res){
+  return res.json(dubito.getAds());
+    
+});
+app.get("/api/ads/:primaryKey", function(req, res){
+  dubito.adDetails(parseInt(req.params.primaryKey));
+    
 });
 
-const routerApi = express.Router();
-app.use("/api", routerApi);
-// concatenazione di path
-routerApi.use("/users", routerUsers);
-routerApi.use("/auth", routerAuth);
 
 app.listen(3000, ()=>{
   console.log("Server is running on localhost:3000");
