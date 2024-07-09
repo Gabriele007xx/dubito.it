@@ -4,5 +4,5 @@ import { dubito } from "../index";
 export const routerUsers = express.Router();
 
 routerUsers.get("/", function(req, res){
-    return res.json([dubito.getUsers()]);
+    return res.json(dubito.getUsers());
 });
