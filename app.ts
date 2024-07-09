@@ -5,14 +5,13 @@ import { Auth } from "./models/Auth";
 import { Favourite } from "./models/Favorite";
 import { Device } from "./models/Device";
 import { DocAPI } from "./doc/DocAPI";
-import express, {Request, Response} from "express";
 
-class Marketplace {
-  users:Array<User> = [];
-  ads:Array<Ad> = [];
-  reviews:Array<Review> = [];
-  auth:Array<Auth> = [];
-  favorites:Array<Favourite> = [];
+export class Marketplace {
+  #users:Array<User> = [];
+  #ads:Array<Ad> = [];
+  #reviews:Array<Review> = [];
+  #auth:Array<Auth> = [];
+  #favorites:Array<Favourite> = [];
 
   register (email:string, password:string) {
     // registrazione account
@@ -24,15 +23,16 @@ class Marketplace {
         }
         return false;
     }
-    const user = this.users.find(OnFind);
+    const user = this.#users.find(OnFind);
     if(!!user)
     {
-        console.log("utente già registrato");
+        return false;
     }
     else
     {
         let newUser = new User(email, password);
-        this.users = [...this.users, newUser];
+        this.#users = [...this.#users, newUser];
+        return true;
     }
   }
   login(email:string, password:string) {
@@ -44,7 +44,7 @@ class Marketplace {
         }
         return false;
     }
-    const userFound = this.users.find(OnFind);
+    const userFound = this.#users.find(OnFind);
 
 
     
@@ -61,7 +61,7 @@ class Marketplace {
         else
         {
             const newAuth = new Auth(userFound.primaryKey);
-            this.auth = [...this.auth, newAuth];
+            this.#auth = [...this.#auth, newAuth];
             return newAuth.getToken();
         }
 
@@ -86,7 +86,7 @@ class Marketplace {
   if(!!authFound)
   {
 
-      this.auth = this.auth.filter(function(){
+      this.#auth = this.#auth.filter(function(){
           if(authFound.getToken() == token)
           {
               return false;
@@ -118,7 +118,7 @@ class Marketplace {
         console.log("token non valido");
       } else {
         const ad = new Ad(title,description, price, status,authFound.referenceKeyUser, category, phone, urlForImage);
-        this.ads = [...this.ads, ad];
+        this.#ads = [...this.#ads, ad];
         console.log('annuncio creato con successo')
       }
   }
@@ -140,7 +140,7 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        this.ads = this.ads.map(function (ad)
+        this.#ads = this.#ads.map(function (ad)
       {
           if(ad.primaryKey == primaryKeyAd)
            {
@@ -159,7 +159,7 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        this.ads = this.ads.filter(function (ad)
+        this.#ads = this.#ads.filter(function (ad)
       {
           if(ad.primaryKey == primaryKeyAd)
            {
@@ -175,7 +175,7 @@ class Marketplace {
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
       const review = new Review(authFound.referenceKeyUser, title, description, rating, referenceKeyAd);
-      this.reviews = [...this.reviews, review];
+      this.#reviews = [...this.#reviews, review];
       console.log("Recensione creata con successo");
     } else {
       console.log("Token non valido, impossibile creare la recensione");
@@ -186,7 +186,7 @@ class Marketplace {
     //modifica recensione
     const authFound = this.getAuthByToken(token);
     if (!!authFound) {
-      const reviewFound = this.reviews.find(function (rev)
+      const reviewFound = this.#reviews.find(function (rev)
     {
       return rev.primaryKey == primaryKeyReview;
     });
@@ -194,7 +194,7 @@ class Marketplace {
       {
         if(reviewFound.referenceKeyUser == authFound.referenceKeyUser)
         {
-          this.reviews = this.reviews.map(function (review)
+          this.#reviews = this.#reviews.map(function (review)
         {
             if(review.primaryKey == primaryKeyReview)
              {
@@ -222,7 +222,7 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        const reviewFound = this.reviews.find(function (rev)
+        const reviewFound = this.#reviews.find(function (rev)
     {
       return rev.primaryKey == primaryKeyReview;
     });
@@ -230,7 +230,7 @@ class Marketplace {
       {
         if(reviewFound.referenceKeyUser == authFound.referenceKeyUser)
         {
-          this.reviews = this.reviews.filter(function (review)
+          this.#reviews = this.#reviews.filter(function (review)
         {
             if(review.primaryKey == primaryKeyReview)
              {
@@ -260,7 +260,7 @@ class Marketplace {
           {
             if(userFound.password == password) 
               {
-                this.users = this.users.filter(function (user)
+                this.#users = this.#users.filter(function (user)
                 {
                     if(user.primaryKey == authFound.referenceKeyUser)
                      {
@@ -288,7 +288,7 @@ class Marketplace {
       if (!authFound ) {
         console.log("token non valido");
       } else {
-        this.users = this.users.map(function(user){
+        this.#users = this.#users.map(function(user){
           if(user.primaryKey == authFound.referenceKeyUser)
             {
               return {...user, username: newUsername};
@@ -311,14 +311,14 @@ class Marketplace {
         }
         return false;
       }
-      const adFound = this.ads.find(OnFind);
+      const adFound = this.#ads.find(OnFind);
       if(!!adFound)
       {
           if(adFound.referenceKeyUser == auth.referenceKeyUser)
           {
             if(!adFound.referenceKeyUserPuchased)
             {
-                this.ads = this.ads.map(function(ad){
+                this.#ads = this.#ads.map(function(ad){
                   if(ad.primaryKey == primaryKeyAd)
                   {
                     return {...ad, referenceKeyUserPuchased: referenceKeyUserPuchased};
@@ -354,7 +354,7 @@ class Marketplace {
   }
   adDetails(primaryKeyAd:number) {
     //dettagli dell'annuncio 
-    return this.ads.find(function (ad){
+    return this.#ads.find(function (ad){
           if(ad.primaryKey == primaryKeyAd)
             {
               return true;
@@ -362,11 +362,11 @@ class Marketplace {
             return false;
       });
   }
-  listAdsSold(token:Auth["token"]) {
+  listadsSold(token:Auth["token"]) {
     //lista annunci venduti da una stessa persona
     const auth = this.getAuthByToken(token);
     if(!!auth)
-    return this.ads.reduce(function(acc:Array<number>, ad){
+    return this.#ads.reduce(function(acc:Array<number>, ad){
       if(auth.referenceKeyUser == ad.referenceKeyUser && ad.referenceKeyUserPuchased != undefined)
         {
           acc = [...acc, ad.primaryKey];
@@ -376,11 +376,11 @@ class Marketplace {
     console.log("token non valido");
   }
 
-  listAdsPurchased(token:Auth["token"]) {
+  listadsPurchased(token:Auth["token"]) {
     // annunci comprati da una stessa persona
     const auth = this.getAuthByToken(token);
     if(!!auth)
-    return this.ads.reduce(function(acc:Array<number>, ad){
+    return this.#ads.reduce(function(acc:Array<number>, ad){
       if(ad.referenceKeyUserPuchased == auth.referenceKeyUser)
         {
           acc = [...acc, ad.primaryKey];
@@ -395,7 +395,7 @@ class Marketplace {
     // lista preferiti personali
     const auth = this.getAuthByToken(token);
     if(!!auth)
-    return this.favorites.reduce(function(acc:Array<number>, fav){
+    return this.#favorites.reduce(function(acc:Array<number>, fav){
       if(fav.referenceKeyUser == auth.referenceKeyUser)
         {
           acc = [...acc, fav.primaryKey];
@@ -404,12 +404,12 @@ class Marketplace {
     }, []);
     else console.log("token non valido");
   }
-  viewAdsList(referenceKeyUser:number, token:Auth["token"])
+  viewadsList(referenceKeyUser:number, token:Auth["token"])
   {
     // lista annunci dello stesso utente
     const auth = this.getAuthByToken(token);
     if(!!auth)
-    return this.ads.reduce(function(acc:Array<number>, ad){
+    return this.#ads.reduce(function(acc:Array<number>, ad){
       if(ad.referenceKeyUser == auth.referenceKeyUser)
         {
           acc = [...acc, ad.primaryKey];
@@ -425,7 +425,7 @@ class Marketplace {
       console.log("token non valido");
     } else {
       const NewFavorite = new Favourite(authFound.referenceKeyUser, primaryKeyAd);
-      this.favorites = [...this.favorites, NewFavorite];
+      this.#favorites = [...this.#favorites, NewFavorite];
       
     }
   }
@@ -436,7 +436,7 @@ class Marketplace {
     if (!authFound ) {
       console.log("token non valido");
     } else {
-      this.favorites = this.favorites.filter(function (favorite:Favourite)
+      this.#favorites = this.#favorites.filter(function (favorite:Favourite)
       {
           if(favorite.referenceKeyAd == primaryKeyAd)
            {
@@ -455,7 +455,7 @@ class Marketplace {
     if (!authFound ) {
       console.log("token non valido");
     } else {
-      this.ads = this.ads.map(function(ad){
+      this.#ads = this.#ads.map(function(ad){
           if(ad.primaryKey = referenceKeyAd)
           {
             let lead = [...ad.lead, authFound.referenceKeyUser];
@@ -464,7 +464,7 @@ class Marketplace {
           return {...ad};
       });
       
-      return this.ads.find(function (ad:Ad){
+      return this.#ads.find(function (ad:Ad){
           if(ad.primaryKey == referenceKeyAd)
             {
               return true;
@@ -473,14 +473,14 @@ class Marketplace {
       })!.phone;
     }
   }
-  getInterestedUsersOfAd(token:Auth["token"], referenceKeyAd:number)
+  getInterestedusersOfAd(token:Auth["token"], referenceKeyAd:number)
   {
     // lista dei utenti interessati all'annuncio
     const authFound  = this.getAuthByToken(token);
     if (!authFound ) {
       console.log("token non valido");
     } else {  
-    return this.ads.find(function (ad:Ad){
+    return this.#ads.find(function (ad:Ad){
           if(ad.primaryKey == referenceKeyAd)
             {
               return true;
@@ -502,7 +502,7 @@ class Marketplace {
           console.log("Token invalido");
         }
         else{
-          const adFound = this.ads.find(function (ad){
+          const adFound = this.#ads.find(function (ad){
           if(ad.primaryKey == referenceKeyAd)
                 {
                   return true;
@@ -521,7 +521,7 @@ class Marketplace {
                   }
                   else
                   {
-                      this.ads.map(function (ad){
+                      this.#ads.map(function (ad){
                         if(ad.primaryKey == referenceKeyAd)
                         {
                             return {...ad, potentialBuyer: authFound.referenceKeyUser};      
@@ -549,7 +549,7 @@ class Marketplace {
   }
   getAuthByToken(token:Auth["token"])
   {
-   return this.auth.find(function(auth){
+   return this.#auth.find(function(auth){
     if(auth.getToken()== token)
     {
         return true;
@@ -559,7 +559,7 @@ class Marketplace {
   }
   getAuthByUserID(id:User["primaryKey"])
 { 
-return this.auth.find(function (auth) {
+return this.#auth.find(function (auth: Auth) {
 {   
     if(auth.referenceKeyUser == id)
     {
@@ -578,9 +578,31 @@ getUserbyUserID(id:User["primaryKey"])
         }
         return false;
     }
-    return  this.users.find(OnFind);  
+    return  this.#users.find(OnFind);  
+}
+getAds()
+{
+  return this.#ads;
+}
+getUsers()
+{
+  return this.#users;
+}
+getAuth()
+{
+  return this.#auth;
+}
+getReviews()
+{
+  return this.#reviews;
+}
+getFavorites()
+{
+  return this.#favorites;
 }
 }
+
+
 
 const apis = {
   register: new DocAPI("auth/register", "POST", false),
@@ -588,33 +610,25 @@ const apis = {
   logout: new DocAPI("auth/logout", "POST", true),
   deleteAccount: new DocAPI("/users/{ID}", "DELETE", true),
   editUsername: new DocAPI("/users/{ID}", "PATCH", true),
-  listAdsSold: new DocAPI("/users/ads/sold", "GET", true),
-  listAdsPurchased: new DocAPI("/users/ads/puchased", "GET", true),
+  listadsSold: new DocAPI("/users/ads/sold", "GET", true),
+  listadsPurchased: new DocAPI("/users/#ads/puchased", "GET", true),
   createAd: new DocAPI("/ads", "POST", true),
   editAd: new DocAPI("/ads/{ID}", "PUT", true),
   markSold: new DocAPI("/ads/{ID}", "PATCH", true),
   markBought: new DocAPI("/ads/{ID}", "PATCH", true),
   adDetails: new DocAPI("/ads/{ID}","GET", false),
-  viewAdsList: new DocAPI("/ads", "GET", false),
+  viewadsList: new DocAPI("/ads", "GET", false),
   deleteAd: new DocAPI("/ads/{ID}", "DELETE", true),
-  getInterestedUsersOfAd: new DocAPI("/ads/{ID}/interestedusers", "GET", true),
+  getInterestedusersOfAd: new DocAPI("/ads/{ID}/interestedusers", "GET", true),
   getPhoneNumber: new DocAPI("/ads/{ID}/phone", "GET", true),
-  getListOfPendingPurchasesToBeConfirmedOfUser: new DocAPI("ads/{ID}/pendinglist", "GET", true),
+  getListOfPendingPurchasesToBeConfirmedOfUser: new DocAPI("#ads/{ID}/pendinglist", "GET", true),
   addReview: new DocAPI("/reviews", "POST", true),
   editReview: new DocAPI("/reviews/{ID}", "PUT", true),
   deleteReview: new DocAPI("/reviews/{ID}", "DELETE", true),
   addFavorite: new DocAPI("/favorites", "POST", true),
   editFavorite: new DocAPI("/favorites/{ID}", "PUT", true),
-  listFavorites: new DocAPI("/users/{ID}/favorites", "GET", true),
+  listfavorites: new DocAPI("/users/{ID}/favorites", "GET", true),
   removeFavorite: new DocAPI("/favorites/{ID}", "DELETE", true),
   listFiltred: new DocAPI("/ads/?category={category}&?price={price}&?meters={meters}", "GET", false),
   registerDevice: new DocAPI("/devices/register/{referenceKeyUser}", "POST", true)
 }
-
-const app = express();
-const server = express.json();
-app.use(server);
-
-app.get("/", function(req: Request, res: Response) {
-  res.send("Hello world");
-});
