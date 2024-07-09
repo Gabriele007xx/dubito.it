@@ -49,7 +49,12 @@ app.get("/api/ads/:primaryKey", function(req, res){
     
 });
 
+app.get("/api/users/:primaryKey/favorites", function(req, res){
+  dubito.listFavourites(parseInt(req.header.authorization));
+    
+});
 
 app.listen(3000, ()=>{
   console.log("Server is running on localhost:3000");
 });
+
