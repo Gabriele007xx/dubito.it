@@ -9,6 +9,10 @@
   "author": "Gabriele Lo Re",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "type@/express": "^5.5.3"
+  },
+  "Dependencies": {
+    "express": "^5.5.3"
   }
 }
