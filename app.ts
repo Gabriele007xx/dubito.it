@@ -5,6 +5,7 @@ import { Auth } from "./models/Auth";
 import { Favourite } from "./models/Favorite";
 import { Device } from "./models/Device";
 import { DocAPI } from "./doc/DocAPI";
+import Express from "express";
 
 class Marketplace {
   users:Array<User> = [];
@@ -609,3 +610,11 @@ const apis = {
   listFiltred: new DocAPI("/ads/?category={category}&?price={price}&?meters={meters}", "GET", false),
   registerDevice: new DocAPI("/devices/register/{referenceKeyUser}", "POST", true)
 }
+
+const app = express();
+const server = express.json();
+app.use(server);
+
+app.get("/", function(req, res) {
+  res.send("Hello world");
+});
