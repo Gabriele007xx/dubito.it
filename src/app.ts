@@ -122,7 +122,7 @@ export class Marketplace {
     const authFound = this.getAuthByToken(token);
 
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       this.#ads = this.#ads.map(function (ad) {
         if (ad.primaryKey == primaryKeyAd) {
@@ -139,6 +139,7 @@ export class Marketplace {
         }
         return { ...ad };
       });
+      return true;
     }
   }
 
@@ -147,7 +148,7 @@ export class Marketplace {
     const authFound = this.getAuthByToken(token);
 
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       this.#ads = this.#ads.filter(function (ad) {
         if (ad.primaryKey == primaryKeyAd) {
@@ -155,6 +156,7 @@ export class Marketplace {
         }
         return true;
       });
+      return true;
     }
   }
 
