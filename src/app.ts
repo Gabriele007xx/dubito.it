@@ -406,7 +406,7 @@ export class Marketplace {
     // rimuovi dai preferiti un preferito
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       this.#favorites = this.#favorites.filter(function (favorite: Favourite) {
         if (favorite.referenceKeyAd == primaryKeyAd) {
@@ -414,7 +414,7 @@ export class Marketplace {
         }
         return true;
       });
-      console.log("Preferito eliminato con successo");
+      return true;
     }
   }
 
