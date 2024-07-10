@@ -52,6 +52,10 @@ app.get("/api/users/:primaryKey", function (req, res) {
 });
 
 app.get("/api/ads", function (req: Request, res) {
+  if(!!req.query.price && !!req.query.category && !!req.query.meters)
+  {
+    return res.json(dubito.listFiltred(parseInt(req.query.price.toString()), req.query.category.toString(), new Date(), parseInt(req.query.meters.toString())));
+  }
   return res.json(dubito.getAds());
 });
 app.get("/api/ads/:primaryKey", function (req, res) {
