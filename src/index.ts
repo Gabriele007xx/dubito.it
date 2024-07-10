@@ -45,14 +45,29 @@ app.get("/api/ads", function(req, res){
     
 });
 app.get("/api/ads/:primaryKey", function(req, res){
-  dubito.adDetails(parseInt(req.params.primaryKey));
+  return res.json(dubito.adDetails(parseInt(req.params.primaryKey)));
     
 });
 
 app.get("/api/users/:primaryKey/favorites", function(req, res){
-  dubito.listFavourites(parseInt(req.header.authorization));
+  return res.json (dubito.listFavourites(parseInt(req.body.authorization)));
     
 });
+
+app.get("api/favorites", function(req, res){
+  return res.json(dubito.getFavorites());
+    
+});
+
+app.post("/devices/register", function(req, res){
+  return res.json(dubito.registerDevice(req.body.idDevice, req.body.authorization, req.body.name));
+    
+});
+app.delete("/devices/register", function(req, res){
+  return res.json(dubito.registerDevice(req.body.idDevice, req.body.authorization, req.body.name));
+    
+});
+
 
 app.listen(3000, ()=>{
   console.log("Server is running on localhost:3000");
