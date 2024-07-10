@@ -29,14 +29,17 @@ app.post("/api/auth/login", function (req, res) {
   if (!req.body.password)
     return res.status(400).json({ message: "Missing password" });
   const success = dubito.login(req.body.email, req.body.password);
-  if (success===false) return res.status(400).json({ message: "Login fallito" });
-  return res.status(200).json({ message: "Login avvenuto", token: success});
+  if (success === false)
+    return res.status(400).json({ message: "Login fallito" });
+  return res.status(200).json({ message: "Login avvenuto", token: success });
 });
 app.post("/api/auth/logout", function (req, res) {
-  if (!req.headers.authorization) return res.status(404).json({ message: "Invalid token" });
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Invalid token" });
   const success = dubito.logout(parseInt(req.headers.authorization));
-  if (success===false) return res.status(400).json({ message: "Logout fallito" });
-  return res.status(200).json({ message: "Logout avvenuto", token: success});
+  if (success === false)
+    return res.status(400).json({ message: "Logout fallito" });
+  return res.status(200).json({ message: "Logout avvenuto", token: success });
 });
 
 app.get("/api/users", function (req, res) {
@@ -58,21 +61,21 @@ app.get("/api/ads/:primaryKey", function (req, res) {
 });
 app.post("/api/ads", function (req: Request, res) {
   if (!req.headers.authorization)
-    return res.status(404).json({ message: "Invalid token" });
+    return res.status(400).json({ message: "Invalid token" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   if (!req.body.description)
-    return res.status(404).json({ message: "Invalid description" });
+    return res.status(400).json({ message: "Invalid description" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   if (!req.body.title)
-    return res.status(404).json({ message: "Invalid title" });
+    return res.status(400).json({ message: "Invalid title" });
   const success = dubito.createAd(
     req.body.title,
     req.body.description,
@@ -83,7 +86,48 @@ app.post("/api/ads", function (req: Request, res) {
     req.body.urlImage,
     parseInt(req.headers.authorization)
   );
-  return res.json(dubito.getAds());
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
+app.put("/api/ads", function (req: Request, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Invalid token" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.id) return res.status(400).json({ message: "Invalid ID" });
+  if (!req.body.description)
+    return res.status(400).json({ message: "Invalid description" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  const success = dubito.editAd(
+    req.body.id,
+    req.body.title,
+    req.body.description,
+    parseInt(req.body.price),
+    req.body.status,
+    req.body.category,
+    req.body.phone,
+    req.body.urlImage,
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
+app.delete("/api/ads", function (req: Request, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Invalid token" });
+  if (!req.body.id) return res.status(400).json({ message: "Invalid ID" });
+  const success = dubito.deleteAd(req.body.id, parseInt(req.headers.authorization));
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
 });
 
 app.get("/api/users/:primaryKey/favorites", function (req, res) {
