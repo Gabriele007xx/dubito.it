@@ -44,17 +44,17 @@ export class Marketplace {
       if (userFound.devices.length < 2) {
         const authFound = this.getAuthByUserID(userFound.primaryKey);
         if (!!authFound) {
-          console.log("Gia' autenticato");
+          return false;
         } else {
           const newAuth = new Auth(userFound.primaryKey);
-          this.#auth = [...this.#auth, newAuth];
+          this.#auth = [...this.#auth, newAuth];         
           return newAuth.getToken();
         }
       } else {
-        console.log("Troppi devices");
+        return false;
       }
     } else {
-      console.log("email/password sbagliati");
+      return false;
     }
   }
 
@@ -70,9 +70,9 @@ export class Marketplace {
         }
         return true;
       });
-      console.log("Logout effettuato con successo");
+      return true;
     } else {
-      console.log("token non valido");
+      return false;
     }
   }
 
@@ -90,7 +90,7 @@ export class Marketplace {
     const authFound = this.getAuthByToken(token);
 
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       const ad = new Ad(
         title,
@@ -103,7 +103,7 @@ export class Marketplace {
         urlForImage
       );
       this.#ads = [...this.#ads, ad];
-      console.log("annuncio creato con successo");
+      return true;
     }
   }
 
