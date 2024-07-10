@@ -47,7 +47,7 @@ export class Marketplace {
           return false;
         } else {
           const newAuth = new Auth(userFound.primaryKey);
-          this.#auth = [...this.#auth, newAuth];         
+          this.#auth = [...this.#auth, newAuth];
           return newAuth.getToken();
         }
       } else {
@@ -327,6 +327,13 @@ export class Marketplace {
 
   listFiltred(prezzo: number, categoria: string, data: Date, meters: number) {
     //lista filtrata degli annunci in base alla query
+    return this.#ads.filter(function (ad: Ad) {
+      if(ad.price <= prezzo && ad.category == categoria)
+      {
+        return true;
+      }
+      return false;
+    });
   }
   adDetails(primaryKeyAd: number) {
     //dettagli dell'annuncio
@@ -518,16 +525,13 @@ export class Marketplace {
       return false;
     } else {
       const user = this.getUserbyUserID(auth.referenceKeyUser);
-      if (!!user)
-      {
-        const newDevices = user.devices.filter(function(device: Device)
-      {
-          if(device.id == id)
-          {
+      if (!!user) {
+        const newDevices = user.devices.filter(function (device: Device) {
+          if (device.id == id) {
             return false;
           }
           return true;
-      });
+        });
         this.#users = this.#users.map(function (userCurrent: User) {
           if (user.primaryKey == userCurrent.primaryKey) {
             userCurrent.devices = [...newDevices];
