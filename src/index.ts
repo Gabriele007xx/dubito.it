@@ -47,30 +47,30 @@ app.get("/api/ads/:primaryKey", function (req, res) {
 });
 
 app.get("/api/users/:primaryKey/favorites", function (req, res) {
-  if (!req.body.authorization)
+  if (!req.headers.authorization)
     return res.status(400).send("Missing authorization");
-  return res.json(dubito.listFavourites(parseInt(req.body.authorization)));
+  return res.json(dubito.listFavourites(parseInt(req.headers.authorization)));
 });
 app.get("api/favorites", function (req, res) {
   return res.json(dubito.getFavorites());
 });
 app.delete("api/favorites", function (req, res) {
   if (!req.body.id) return res.status(400).json("Missing ID");
-  if (!req.body.authorization)
+  if (!req.headers.authorization)
     return res.status(400).json("Missing authorization");
-  const result = dubito.removeFavourite(req.body.id, req.body.authorization);
+  const result = dubito.removeFavourite(req.body.id, parseInt(req.headers.authorization));
   if (result) return res.status(200).json("Success");
   return res.status(400).json("Failed");
 });
 
 app.post("/devices/register", function (req, res) {
   if (!req.body.idDevice) return res.status(400).send("Missing ID");
-  if (!req.body.authorization)
+  if (!req.headers.authorization)
     return res.status(400).send("Missing authorization");
   if (!req.body.name) return res.status(400).send("Missing name");
   const result = dubito.registerDevice(
     req.body.idDevice,
-    req.body.authorization,
+    parseInt(req.headers.authorization),
     req.body.name
   );
   if (result) return res.status(200).json("Success");
@@ -78,11 +78,12 @@ app.post("/devices/register", function (req, res) {
 });
 app.delete("/devices/register", function (req, res) {
   if (!req.body.idDevice) return res.status(400).send("Missing ID");
-  if (!req.body.authorization)
+  if (!req.headers.authorization)
     return res.status(400).send("Missing authorization");
-  const result = dubito.removeDevice(req.body.idDevice, req.body.authorization);
+  const result = dubito.removeDevice(req.body.idDevice, parseInt(req.headers.authorization));
   if (result) return res.status(200).json("Success");
   return res.status(400).json("Failed");
+  
 });
 
 app.listen(3000, () => {
