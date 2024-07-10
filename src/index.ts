@@ -66,16 +66,16 @@ app.post("/api/ads", function (req: Request, res) {
     return res.status(400).json({ message: "Invalid title" });
   if (!req.body.description)
     return res.status(400).json({ message: "Invalid description" });
-  if (!req.body.title)
+  if (!req.body.price)
+    return res.status(400).json({ message: "Invalid price" });
+  if (!req.body.status)
+    return res.status(400).json({ message: "Invalid status" });
+  if (!req.body.category)
     return res.status(400).json({ message: "Invalid title" });
-  if (!req.body.title)
-    return res.status(400).json({ message: "Invalid title" });
-  if (!req.body.title)
-    return res.status(400).json({ message: "Invalid title" });
-  if (!req.body.title)
-    return res.status(400).json({ message: "Invalid title" });
-  if (!req.body.title)
-    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.phone)
+    return res.status(400).json({ message: "Invalid phone" });
+  if (!req.body.urlForImage)
+    return res.status(400).json({ message: "Invalid urlImage" });
   const success = dubito.createAd(
     req.body.title,
     req.body.description,
