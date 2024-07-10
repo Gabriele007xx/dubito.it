@@ -50,11 +50,59 @@ app.get("/api/users/:primaryKey", function (req, res) {
   if (!!userFound) return res.json(userFound);
   return res.status(404).json({ message: "Not found" });
 });
+app.delete("/api/users", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Missing authorization" });
+  if (!req.body.password)
+    return res.status(400).json({ message: "Missing password" });
+  const success = dubito.deleteAccount(
+    parseInt(req.headers.authorization),
+    req.body.password
+  );
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
+app.get("/api/users/:primaryKey/purchased", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Missing authorization" });
+  const success = dubito.listadsPurchased(
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
+app.get("/api/users/:primaryKey/sold", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Missing authorization" });
+  const success = dubito.listadsSold(
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
+app.patch("/api/users", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Missing authorization" });
+  if (!req.body.username)
+    return res.status(400).json({ message: "Missing username" });
+  const success = dubito.editUsername(
+    req.body.username,
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.json({ messge: "Success" });
+  return res.json({ messge: "Failed" });
+});
 
 app.get("/api/ads", function (req: Request, res) {
-  if(!!req.query.price && !!req.query.category && !!req.query.meters)
-  {
-    return res.json(dubito.listFiltred(parseInt(req.query.price.toString()), req.query.category.toString(), new Date(), parseInt(req.query.meters.toString())));
+  if (!!req.query.price && !!req.query.category && !!req.query.meters) {
+    return res.json(
+      dubito.listFiltred(
+        parseInt(req.query.price.toString()),
+        req.query.category.toString(),
+        new Date(),
+        parseInt(req.query.meters.toString())
+      )
+    );
   }
   return res.json(dubito.getAds());
 });
@@ -129,15 +177,68 @@ app.delete("/api/ads", function (req: Request, res) {
   if (!req.headers.authorization)
     return res.status(400).json({ message: "Invalid token" });
   if (!req.body.id) return res.status(400).json({ message: "Invalid ID" });
-  const success = dubito.deleteAd(req.body.id, parseInt(req.headers.authorization));
+  const success = dubito.deleteAd(
+    req.body.id,
+    parseInt(req.headers.authorization)
+  );
   if (success) return res.json({ messge: "Success" });
   return res.json({ messge: "Failed" });
+});
+app.patch("/api/ads", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Invalid token" });
+  if (!req.body.id) return res.status(400).json({ message: "Invalid ID" });
+  if (!req.body.keyUser)
+    return res.status(400).json({ message: "Invalid User ID" });
+  if (req.query.action == "sold") {
+    const success = dubito.markSold(
+      req.body.id,
+      parseInt(req.headers.authorization),
+      req.body.keyUser
+    );
+    if (success) return res.json({ messge: "Success" });
+    return res.json({ messge: "Failed" });
+  }
+  if (req.query.action == "bought") {
+    const success = dubito.markBought(
+      parseInt(req.headers.authorization),
+      req.body.id
+    );
+    if (success) return res.json({ messge: "Success" });
+    return res.json({ messge: "Failed" });
+  }
+  return res.json({ messge: "Invalid action" });
+});
+app.get("/api/ads/:primaryKey/interestedusers", function (req, res) {
+  if (!req.headers.authorization)
+    return res.status(400).json({ message: "Invalid token" });
+  if (!req.query.primaryKey)
+    return res.status(400).json({ message: "Invalid ID" });
+  if (req.query.action == "sold") {
+    const success = dubito.getInterestedusersOfAd(
+      parseInt(req.headers.authorization),
+      parseInt(req.query.primaryKey.toString())
+    );
+    if (!!success) return res.json(success);
+    return res.json({ messge: "Failed" });
+  }
+  if (req.query.action == "bought") {
+    const success = dubito.markBought(
+      parseInt(req.headers.authorization),
+      req.body.id
+    );
+    if (success) return res.json({ messge: "Success" });
+    return res.json({ messge: "Failed" });
+  }
+  return res.json({ messge: "Invalid action" });
 });
 
 app.get("/api/users/:primaryKey/favorites", function (req, res) {
   if (!req.headers.authorization)
     return res.status(400).json({ message: "Missing authorization" });
-  return res.json(dubito.listFavourites(parseInt(req.headers.authorization)));
+  const favorites = res.json(dubito.listFavourites(parseInt(req.headers.authorization)));
+  if(!!favorites) return res.status(200).json(favorites);
+  return res.status(400).json({ message: "Failed" });
 });
 app.get("api/favorites", function (req, res) {
   return res.json(dubito.getFavorites());
@@ -154,7 +255,7 @@ app.delete("api/favorites", function (req, res) {
   return res.status(400).json({ message: "Failed" });
 });
 
-app.post("/devices/register", function (req, res) {
+app.post("api/devices", function (req, res) {
   if (!req.body.idDevice)
     return res.status(400).json({ message: "Missing ID" });
   if (!req.headers.authorization)
@@ -168,7 +269,7 @@ app.post("/devices/register", function (req, res) {
   if (result) return res.status(200).json({ message: "Success" });
   return res.status(400).json({ message: "Failed" });
 });
-app.delete("/devices/register", function (req, res) {
+app.delete("api/devices", function (req, res) {
   if (!req.body.idDevice)
     return res.status(400).json({ message: "Missing ID" });
   if (!req.headers.authorization)
@@ -178,6 +279,58 @@ app.delete("/devices/register", function (req, res) {
     parseInt(req.headers.authorization)
   );
   if (result) return res.status(200).json({ message: "Success" });
+  return res.status(400).json({ message: "Failed" });
+});
+
+app.post("/api/reviews", function (req, res) {
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.description)
+    return res.status(400).json({ message: "Invalid description" });
+  if (!req.body.rating)
+    return res.status(400).json({ message: "Invalid rating" });
+  if (!req.body.referenceKeyAd)
+    return res.status(400).json({ message: "Invalid ID" });
+  if (!req.headers.authorization) return res.json({ message: "Missing token" });
+  const success = dubito.addReview(
+    req.body.title,
+    req.body.description,
+    parseInt(req.body.rating),
+    parseInt(req.body.referenceKeyAd),
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.status(200).json({ message: "Success" });
+  return res.status(400).json({ message: "Failed" });
+});
+app.put("/api/reviews", function (req, res) {
+  if (!req.body.title)
+    return res.status(400).json({ message: "Invalid title" });
+  if (!req.body.description)
+    return res.status(400).json({ message: "Invalid description" });
+  if (!req.body.rating)
+    return res.status(400).json({ message: "Invalid rating" });
+  if (!req.body.referenceKeyAd)
+    return res.status(400).json({ message: "Invalid ID" });
+  if (!req.headers.authorization) return res.json({ message: "Missing token" });
+  const success = dubito.editReview(
+    req.body.referenceKeyAd,
+    req.body.title,
+    req.body.description,
+    parseInt(req.body.rating),
+    parseInt(req.headers.authorization)
+  );
+  if (success) return res.status(200).json({ message: "Success" });
+  return res.status(400).json({ message: "Failed" });
+});
+app.delete("/api/reviews", function (req, res) {
+  if (!req.body.referenceKeyAd)
+    return res.status(400).json({ message: "Invalid ID" });
+  if (!req.headers.authorization) return res.json({ message: "Missing token" });
+  const success = dubito.deleteReview(
+    parseInt(req.headers.authorization),
+    parseInt(req.body.referenceKeyAd)
+  );
+  if (success) return res.status(200).json({ message: "Success" });
   return res.status(400).json({ message: "Failed" });
 });
 
