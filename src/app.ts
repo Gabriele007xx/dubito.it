@@ -178,9 +178,9 @@ export class Marketplace {
         referenceKeyAd
       );
       this.#reviews = [...this.#reviews, review];
-      console.log("Recensione creata con successo");
+      return true;
     } else {
-      console.log("Token non valido, impossibile creare la recensione");
+      return false;
     }
   }
 
@@ -210,12 +210,13 @@ export class Marketplace {
             }
             return { ...review };
           });
+          return true;
         } else {
-          console.log("La recensione non e' tua");
+          return false;
         }
       }
     } else {
-      console.log("Token non valido, impossibile modificare la recensione");
+      return false;
     }
   }
 
@@ -224,7 +225,7 @@ export class Marketplace {
     const authFound = this.getAuthByToken(token);
 
     if (!authFound) {
-      console.log("token non valido");
+      return true;
     } else {
       const reviewFound = this.#reviews.find(function (rev) {
         return rev.primaryKey == primaryKeyReview;
@@ -237,9 +238,9 @@ export class Marketplace {
             }
             return true;
           });
-          console.log("Recensione eliminata con successo");
+          return true;
         } else {
-          console.log("La recensione non e' tua");
+          return false;
         }
       }
     }
@@ -249,7 +250,7 @@ export class Marketplace {
     //elimina account
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       const userFound = this.getUserbyUserID(authFound.referenceKeyUser);
       if (!!userFound) {
@@ -261,11 +262,12 @@ export class Marketplace {
             return true;
           });
           this.logout(token);
+          return true;
         } else {
-          console.log("Password non valida");
+          return false;
         }
       } else {
-        console.log("utente non trovato");
+        return false;
       }
     }
   }
@@ -273,7 +275,7 @@ export class Marketplace {
   editUsername(newUsername: string, token: Auth["token"]) {
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
-      console.log("token non valido");
+      return false;
     } else {
       this.#users = this.#users.map(function (user) {
         if (user.primaryKey == authFound.referenceKeyUser) {
@@ -281,6 +283,7 @@ export class Marketplace {
         }
         return { ...user };
       });
+      return true;
     }
   }
   markSold(
@@ -310,18 +313,18 @@ export class Marketplace {
               }
               return { ...ad };
             });
-            console.log("Annuncio modificato");
+            return true;
           } else {
-            console.log("Annuncio già venduto");
+            return false;
           }
         } else {
-          console.log("Operazione non autorizzata.");
+          return false;
         }
       } else {
-        console.log("Annuncio invalido");
+        return false;
       }
     } else {
-      console.log("token non valido");
+      return false;
     }
   }
 
@@ -357,7 +360,7 @@ export class Marketplace {
         }
         return acc;
       }, []);
-    console.log("token non valido");
+    return undefined;
   }
 
   listadsPurchased(token: Auth["token"]) {
@@ -370,7 +373,7 @@ export class Marketplace {
         }
         return acc;
       }, []);
-    else console.log("token non valido");
+    return undefined;
   }
 
   listFavourites(token: Auth["token"]) {
@@ -470,7 +473,7 @@ export class Marketplace {
     // segna come comprato (da compratore)
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
-      console.log("Token invalido");
+      return false;
     } else {
       const adFound = this.#ads.find(function (ad) {
         if (ad.primaryKey == referenceKeyAd) {
@@ -479,10 +482,10 @@ export class Marketplace {
         return false;
       });
       if (!adFound) {
-        console.log("Annuncio non trovato");
+        return false;
       } else {
         if (adFound.potentialBuyer != undefined) {
-          console.log("Gia' comprato");
+          return false;
         } else {
           this.#ads.map(function (ad) {
             if (ad.primaryKey == referenceKeyAd) {
@@ -490,6 +493,7 @@ export class Marketplace {
             }
             return { ...ad };
           });
+          return true;
         }
       }
     }
@@ -604,7 +608,6 @@ const apis = {
   viewadsList: new DocAPI("/ads", "GET", false),
   deleteAd: new DocAPI("/ads/{ID}", "DELETE", true),
   getInterestedusersOfAd: new DocAPI("/ads/{ID}/interestedusers", "GET", true),
-  getPhoneNumber: new DocAPI("/ads/{ID}/phone", "GET", true),
   getListOfPendingPurchasesToBeConfirmedOfUser: new DocAPI(
     "#ads/{ID}/pendinglist",
     "GET",
@@ -614,7 +617,6 @@ const apis = {
   editReview: new DocAPI("/reviews/", "PUT", true),
   deleteReview: new DocAPI("/reviews/", "DELETE", true),
   addFavorite: new DocAPI("/favorites", "POST", true),
-  editFavorite: new DocAPI("/favorites/", "PUT", true),
   listfavorites: new DocAPI("/users/{ID}/favorites", "GET", true),
   removeFavorite: new DocAPI("/favorites", "DELETE", true),
   listFiltred: new DocAPI(
