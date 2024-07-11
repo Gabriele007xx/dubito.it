@@ -4,6 +4,8 @@ import { Marketplace } from "./app";
 export const dubito = new Marketplace();
 dubito.register("ueididi@kfif.it", "1234");
 
+const port = process.env.PORT || 3000;
+const baseURL = process.env.BASE_URL || "http://localhost"
 const app = express();
 const server = express.json();
 
@@ -334,6 +336,6 @@ app.delete("/api/reviews", function (req, res) {
   return res.status(400).json({ message: "Failed" });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on localhost:3000");
+app.listen(port, () => {
+  console.log(`Server is running on ${baseURL}:${port}`);
 });
