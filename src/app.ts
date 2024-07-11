@@ -77,6 +77,7 @@ export class Marketplace {
   }
 
   createAd(
+    obj : {
     title: string,
     description: string,
     price: number,
@@ -84,23 +85,19 @@ export class Marketplace {
     category: string,
     phone: string,
     urlForImage: string,
-    token: Auth["token"]
+    token: Auth["token"],
+    referenceKeyUser: string
+    }
   ) {
     //crea un'annuncio
-    const authFound = this.getAuthByToken(token);
-
+    const authFound = this.getAuthByToken(obj.token);
+    
     if (!authFound) {
       return false;
     } else {
+      obj.referenceKeyUser = authFound.referenceKeyUser;
       const ad = new Ad(
-        title,
-        description,
-        price,
-        status,
-        authFound.referenceKeyUser,
-        category,
-        phone,
-        urlForImage
+       obj
       );
       this.#ads = [...this.#ads, ad];
       return true;
@@ -108,7 +105,8 @@ export class Marketplace {
   }
 
   editAd(
-    primaryKeyAd: number,
+    obj : {
+    primaryKeyAd: Ad["primaryKey"],
     title: string,
     description: string,
     price: number,
@@ -117,24 +115,19 @@ export class Marketplace {
     phone: string,
     urlForImage: string,
     token: Auth["token"]
+    }
   ) {
     // modificare un'annuncio
-    const authFound = this.getAuthByToken(token);
+    const authFound = this.getAuthByToken(obj.token);
 
     if (!authFound) {
       return false;
     } else {
       this.#ads = this.#ads.map(function (ad) {
-        if (ad.primaryKey == primaryKeyAd) {
+        if (ad.primaryKey == obj.primaryKeyAd) {
           return {
             ...ad,
-            title: title,
-            description: description,
-            price: price,
-            status: status,
-            category: category,
-            phone: phone,
-            urlForImage: urlForImage,
+            obj
           };
         }
         return { ...ad };
@@ -143,7 +136,7 @@ export class Marketplace {
     }
   }
 
-  deleteAd(primaryKeyAd: number, token: Auth["token"]) {
+  deleteAd(primaryKeyAd: Ad["primaryKey"], token: Auth["token"]) {
     //elimina un'annuncio
     const authFound = this.getAuthByToken(token);
 
@@ -164,7 +157,7 @@ export class Marketplace {
     title: string,
     description: string,
     rating: number,
-    referenceKeyAd: number,
+    referenceKeyAd: Ad["primaryKey"],
     token: Auth["token"]
   ) {
     //crea recensione
@@ -185,7 +178,7 @@ export class Marketplace {
   }
 
   editReview(
-    primaryKeyReview: number,
+    primaryKeyReview: Review["primaryKey"],
     title: string,
     description: string,
     rating: number,
@@ -220,7 +213,7 @@ export class Marketplace {
     }
   }
 
-  deleteReview(primaryKeyReview: number, token: Auth["token"]) {
+  deleteReview(primaryKeyReview: Review["primaryKey"], token: Auth["token"]) {
     //elimina recensione
     const authFound = this.getAuthByToken(token);
 
@@ -287,9 +280,9 @@ export class Marketplace {
     }
   }
   markSold(
-    primaryKeyAd: number,
+    primaryKeyAd: Ad["primaryKey"],
     token: Auth["token"],
-    referenceKeyUserPuchased: number
+    referenceKeyUserPuchased: User["primaryKey"]
   ) {
     //metti annuncio come venduto
     const auth = this.getAuthByToken(token);
@@ -338,7 +331,7 @@ export class Marketplace {
       return false;
     });
   }
-  adDetails(primaryKeyAd: number) {
+  adDetails(primaryKeyAd: Ad["primaryKey"]) {
     //dettagli dell'annuncio
     return this.#ads.find(function (ad) {
       if (ad.primaryKey == primaryKeyAd) {
@@ -351,7 +344,7 @@ export class Marketplace {
     //lista annunci venduti da una stessa persona
     const auth = this.getAuthByToken(token);
     if (!!auth)
-      return this.#ads.reduce(function (acc: Array<number>, ad) {
+      return this.#ads.reduce(function (acc: Array<User["primaryKey"]>, ad) {
         if (
           auth.referenceKeyUser == ad.referenceKeyUser &&
           ad.referenceKeyUserPuchased != undefined
@@ -367,7 +360,7 @@ export class Marketplace {
     // annunci comprati da una stessa persona
     const auth = this.getAuthByToken(token);
     if (!!auth)
-      return this.#ads.reduce(function (acc: Array<number>, ad) {
+      return this.#ads.reduce(function (acc: Array<User["primaryKey"]>, ad) {
         if (ad.referenceKeyUserPuchased == auth.referenceKeyUser) {
           acc = [...acc, ad.primaryKey];
         }
@@ -380,7 +373,7 @@ export class Marketplace {
     // lista preferiti personali
     const auth = this.getAuthByToken(token);
     if (!!auth)
-      return this.#favorites.reduce(function (acc: Array<number>, fav) {
+      return this.#favorites.reduce(function (acc: Array<Favourite["primaryKey"]>, fav) {
         if (fav.referenceKeyUser == auth.referenceKeyUser) {
           acc = [...acc, fav.primaryKey];
         }
@@ -392,7 +385,7 @@ export class Marketplace {
     // lista annunci dello stesso utente
     const auth = this.getAuthByToken(token);
     if (!!auth)
-      return this.#ads.reduce(function (acc: Array<number>, ad) {
+      return this.#ads.reduce(function (acc: Array<Ad["primaryKey"]>, ad) {
         if (ad.referenceKeyUser == auth.referenceKeyUser) {
           acc = [...acc, ad.primaryKey];
         }
@@ -400,7 +393,7 @@ export class Marketplace {
       }, []);
     else console.log("token non valido");
   }
-  addFavourite(primaryKeyAd: number, token: Auth["token"]) {
+  addFavourite(primaryKeyAd: Ad["primaryKey"], token: Auth["token"]) {
     //aggiungi ai preferiti un preferito
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
@@ -414,7 +407,7 @@ export class Marketplace {
     }
   }
 
-  removeFavourite(primaryKeyAd: number, token: Auth["token"]) {
+  removeFavourite(primaryKeyAd: Ad["primaryKey"], token: Auth["token"]) {
     // rimuovi dai preferiti un preferito
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
@@ -430,13 +423,13 @@ export class Marketplace {
     }
   }
 
-  getPhoneNumber(token: Auth["token"], referenceKeyAd: number) {
+  getPhoneNumber(token: Auth["token"], referenceKeyAd: Ad["primaryKey"]) {
     // rivela il numero di telefono dell'annuncio
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
       console.log("token non valido");
     } else {
-      this.#ads = this.#ads.map(function (ad) {
+      this.#ads = this.#ads.map(function (ad: Ad) {
         if ((ad.primaryKey = referenceKeyAd)) {
           let lead = [...ad.lead, authFound.referenceKeyUser];
           return { ...ad, lead: lead };
@@ -452,7 +445,7 @@ export class Marketplace {
       })!.phone;
     }
   }
-  getInterestedusersOfAd(token: Auth["token"], referenceKeyAd: number) {
+  getInterestedusersOfAd(token: Auth["token"], referenceKeyAd: Ad["primaryKey"]) {
     // lista dei utenti interessati all'annuncio
     const authFound = this.getAuthByToken(token);
     if (!authFound) {
@@ -469,7 +462,7 @@ export class Marketplace {
   getListOfPendingPurchasesToBeConfirmedOfUser(token: Auth["token"]) {
     // lista degli annunci in attesa du essere confermati di un utente
   }
-  markBought(token: Auth["token"], referenceKeyAd: number) {
+  markBought(token: Auth["token"], referenceKeyAd: Ad["primaryKey"]) {
     // segna come comprato (da compratore)
     const authFound = this.getAuthByToken(token);
     if (!authFound) {

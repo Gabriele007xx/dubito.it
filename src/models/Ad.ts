@@ -10,31 +10,33 @@ export class Ad {
       phone:string;
       urlForImage:string;
       date:Date;
-      primaryKey:number;
-      potentialBuyer:number;
+      primaryKey:string;
+      potentialBuyer:string;
       referenceKeyUserPuchased:User["primaryKey"];
-      lead:Array<number> = [];
+      lead:Array<string> = [];
     constructor(
+      obj: {
       title:string,
       description:string,
       price:number,
       status:string,
-      referenceKeyUser:number,
+      referenceKeyUser:User["primaryKey"],
       category:string,
       phone:string,
       urlForImage:string
+      }
     ) {
-      this.title = title;
-      this.description = description;
-      this.price = price;
+      this.title = obj.title;
+      this.description = obj.description;
+      this.price = obj.price;
       this.date = new Date();
-      this.status = status;
-      this.referenceKeyUser = referenceKeyUser;
-      this.category = category;
-      this.primaryKey = Math.random();
-      this.phone = phone;
-      this.urlForImage = urlForImage;
-      this.referenceKeyUserPuchased = NaN;
-      this.potentialBuyer = NaN;
+      this.status = obj.status;
+      this.referenceKeyUser = obj.referenceKeyUser;
+      this.category = obj.category;
+      this.primaryKey = Math.random().toString();
+      this.phone = obj.phone;
+      this.urlForImage = obj.urlForImage;
+      this.referenceKeyUserPuchased = "";
+      this.potentialBuyer = "";
     }
   }
