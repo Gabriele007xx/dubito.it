@@ -4,7 +4,7 @@ export class User {
     username:string;
     email:string;
     password:string;
-    primaryKey:number;
+    primaryKey:string;
     devices:Array<Device>= [];
   
     constructor(email:string, password:string) {
@@ -19,7 +19,7 @@ export class User {
       */
       this.email = email;
       this.password = password;
-      this.primaryKey = Math.random();
+      this.primaryKey = Math.random().toString();
       
     }
   }

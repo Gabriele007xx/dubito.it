@@ -1,13 +1,14 @@
 import { User } from "./User";
 
 export class Auth {
-    primaryKey:number;
+    primaryKey:string;
     referenceKeyUser:User["primaryKey"];
-    token:number;
-    constructor(referenceKeyUser:number) {
-      this.primaryKey = Math.random();
+    token:string;
+    constructor(referenceKeyUser:User["primaryKey"]) {
+      this.primaryKey = Math.random().toString();
       this.referenceKeyUser = referenceKeyUser;
-      this.token = Math.random()*10000000;
+      let tok =  Math.random()*10000000;
+      this.token = tok.toString();
     }
     getToken()
     {
