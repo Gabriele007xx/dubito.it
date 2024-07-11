@@ -10,4 +10,4 @@ dubito.it è un sito per vendere e comprare cose. Nessuna spedizione: tutto riti
 *Dubito.it è un sito eccezzionale. Mi ero accordato col venditore per l'acquisto di un ventilatore, e sono tornato a casa con una posche.*
 
 **Alessio** ⭐⭐⭐⭐⭐
-*Il sito è fatto bene ma mi ritrovato un venditore come spacciatore.*
+*Il sito è fatto bene ma mi sono ritrovato uno spacciatore come venditore.*
