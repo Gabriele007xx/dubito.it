@@ -84,10 +84,10 @@ app.get("/api/ads", function (req: Request, res) {
   if (!!req.query.price && !!req.query.category && !!req.query.meters) {
     return res.json(
       dubito.listFiltred(
-        parseInt(req.query.price.toString()),
+        Number(req.query.price),
         req.query.category.toString(),
         new Date(),
-        parseInt(req.query.meters.toString())
+        Number(req.query.meters)
       )
     );
   }
@@ -111,7 +111,7 @@ app.post("/api/ads", function (req: Request, res) {
     {
     title: req.body.title,
     description: req.body.description,
-    price: parseInt(req.body.price),
+    price: Number(req.body.price),
     status: req.body.status,
     category: req.body.category,
     phone: req.body.phone,
@@ -138,7 +138,7 @@ app.put("/api/ads", function (req: Request, res) {
       primaryKeyAd: req.body.id,
       title: req.body.title,
       description: req.body.description,
-      price: parseInt(req.body.price),
+      price: Number(req.body.price),
       status: req.body.status,
       category: req.body.category,
       phone: req.body.phone,
@@ -256,7 +256,7 @@ app.post("/api/reviews", function (req, res) {
   const success = dubito.addReview(
     req.body.title,
     req.body.description,
-    parseInt(req.body.rating),
+    Number(req.body.rating),
     req.body.referenceKeyAd,
     req.headers.authorization
   );
@@ -273,7 +273,7 @@ app.put("/api/reviews", function (req, res) {
     req.body.referenceKeyAd,
     req.body.title,
     req.body.description,
-    parseInt(req.body.rating),
+    Number(req.body.rating),
     req.headers.authorization
   );
   if (success) return res.status(200).json({ message: "Success" });
