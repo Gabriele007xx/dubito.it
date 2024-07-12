@@ -1,0 +1,125 @@
+openapi: "3.0.3"
+info:
+  title: dubito.it API
+  version: "1.0"
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/auth/register:
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST 
+  /api/auth/login:
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST   
+  /api/auth/logout:
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST
+  /api/users:
+     get:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST  
+     patch:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST  
+     delete:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST      
+
+  /api/ads:
+    get:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST  
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST
+    put:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST   
+    patch:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST  
+    delete:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST  
+  /api/reviews:
+    put:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST    
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST      
+    delete:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST                                           
+  /api/favorites:
+    get:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST    
+    delete:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST      
+  /api/devices:  
+    post:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST      
+    delete:
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BAD REQUEST                                           
+                                         
