@@ -91,7 +91,6 @@ export class Marketplace {
   ) {
     //crea un'annuncio
     const authFound = this.getAuthByToken(obj.token);
-    
     if (!authFound) {
       return false;
     } else {

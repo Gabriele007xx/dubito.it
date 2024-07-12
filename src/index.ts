@@ -25,7 +25,7 @@ app.post("/api/auth/login", function (req, res) {
   if (!req.body.email) return res.status(400).json({ message: "Missing email" });
   if (!req.body.password) return res.status(400).json({ message: "Missing password" });
   const success = dubito.login(req.body.email, req.body.password);
-  if (success === false) return res.status(400).json({ message: "Login fallito" });
+  if (success == false) return res.status(400).json({ message: "Login fallito" });
   return res.status(200).json({ message: "Login avvenuto", token: success });
 });
 app.post("/api/auth/logout", function (req, res) {
@@ -121,7 +121,7 @@ app.post("/api/ads", function (req: Request, res) {
     }
   );
   if (success) return res.json({ messge: "Success" });
-  return res.json({ messge: "Failed" });
+  return res.json({ message: "Failed" });
 });
 app.put("/api/ads", function (req: Request, res) {
   if (!req.headers.authorization) return res.status(400).json({ message: "Invalid token" });
@@ -296,5 +296,5 @@ app.listen(port, () => {
 
 function getRightToken(token: string)
 {
-  return token.includes("Bearer ") ? token.split("Bearer ")[0] : token;
+  return token.includes("Bearer ") ? token.split("Bearer ")[1] : token;
 }
