@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { Marketplace } from "./app";
+import swaggerUI from "swagger-ui-express";
 
 export const dubito = new Marketplace();
 
