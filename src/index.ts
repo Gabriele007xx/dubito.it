@@ -186,23 +186,9 @@ app.patch("/api/ads", function (req, res) {
 app.get("/api/ads/:primaryKey/interestedusers", function (req, res) {
   if (!req.headers.authorization) return res.status(400).json({ message: "Invalid token" });
   if (!req.query.primaryKey) return res.status(400).json({ message: "Invalid ID" });
-  if (req.query.action == "sold") {
-    const success = dubito.getInterestedusersOfAd(
-      getRightToken(req.headers.authorization),
-      req.query.primaryKey.toString()
-    );
-    if (!!success) return res.json(success);
-    return res.json({ message: "Failed" });
-  }
-  if (req.query.action == "bought") {
-    const success = dubito.markBought(
-      getRightToken(req.headers.authorization),
-      req.body.id
-    );
-    if (success) return res.json({ message: "Success" });
-    return res.json({ message: "Failed" });
-  }
-  return res.json({ message: "Invalid action" });
+  const success = dubito.getInterestedusersOfAd(getRightToken(req.headers.authorization), req.query.primaryKey.toString());
+  if (success) return res.json({ message: "Success" });
+  return res.json({ message: "Failed" });
 });
 
 app.get("/api/users/:primaryKey/favorites", function (req, res) {
