@@ -476,16 +476,16 @@ export class Marketplace {
       if (!adFound) {
         return false;
       } else {
-        if (adFound.potentialBuyer != undefined) {
-          return false;
-        } else {
-          this.#ads.map(function (ad) {
+        if (adFound.potentialBuyer == "" && authFound.referenceKeyUser != adFound.referenceKeyUser) {
+          this.#ads = this.#ads.map(function (ad) {
             if (ad.primaryKey == referenceKeyAd) {
               return { ...ad, potentialBuyer: authFound.referenceKeyUser };
             }
             return { ...ad };
           });
           return true;
+        } else {
+          return false;
         }
       }
     }

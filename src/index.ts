@@ -163,8 +163,8 @@ app.delete("/api/ads", function (req: Request, res) {
 app.patch("/api/ads", function (req, res) {
   if (!req.headers.authorization) return res.status(400).json({ message: "Invalid token" });
   if (!req.body.id) return res.status(400).json({ message: "Invalid ID" });
-  if (!req.body.keyUser) return res.status(400).json({ message: "Invalid User ID" });
   if (req.query.action == "sold") {
+    if (!req.body.keyUser) return res.status(400).json({ message: "Invalid User ID" });
     const success = dubito.markSold(
       req.body.id,
       getRightToken(req.headers.authorization),
