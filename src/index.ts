@@ -51,7 +51,7 @@ app.delete("/api/users", function (req, res) {
     getRightToken(req.headers.authorization),
     req.body.password
   );
-  if (success) return res.json({ messge: "Success" });
+  if (success) return res.json({ message: "Success" });
   return res.json({ messge: "Failed" });
 });
 app.get("/api/users/:primaryKey/purchased", function (req, res) {
