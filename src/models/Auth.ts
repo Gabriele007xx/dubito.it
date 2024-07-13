@@ -14,12 +14,12 @@ export class Auth {
     {
       return this.token;
     }
-    #generateToken(lenght: number){
+    #generateToken(numberChars: number){
       let result = '';
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       const charactersLength = characters.length;
       let counter = 0;
-      while (counter < length) {
+      while (counter < numberChars) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
         counter += 1;
       }
